@@ -1,19 +1,21 @@
 # BetForge service image.
-# Builds a small Python ASGI server exposing /predict from the stdlib model core.
-# The training CSV is small (international results window) and shipped in-image;
-# a production setup should mount/refresh data separately.
+# Builds a small Python ASGI server exposing /predict from the SQLite-backed,
+# stdlib model core. Training data is ingested into betforge.db at build time
+# from the shipped canonical CSV (the .db itself is a gitignored build artifact).
 FROM python:3.12-slim
 
 WORKDIR /app
 
-# Install build tooling, then project with web extras (fastapi + uvicorn).
+# Install build tooling, then project with web extra (fastapi + uvicorn).
 COPY pyproject.toml README.md ./
 COPY src ./src
 RUN pip install --no-cache-dir --upgrade pip \
  && pip install --no-cache-dir .[web]
 
-# Training data (free/public). Mount over this path to refresh without rebuild.
+# Training data + ingest script -> build the SQLite DB inside the image.
+COPY scripts ./scripts
 COPY data/matches.csv /app/data/matches.csv
+RUN python scripts/ingest_db.py --csv /app/data/matches.csv --db /app/betforge.db
 
 EXPOSE 8000
 ENV HOST=0.0.0.0 PORT=8000

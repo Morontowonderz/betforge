@@ -2,51 +2,57 @@
 
 A lightweight, dependency-optional HTTP layer so BetForge can be served
 behind any ASGI host (uvicorn, docker, railway, etc.) without touching the
-stdlib model core.
+stdlib model core. Training matches are loaded from the local SQLite database
+(`betforge.db`), not from the CSV on every startup.
 
 Run:
     uvicorn betforge.api:app --host 0.0.0.0 --port 8000
 Example:
     curl 'http://localhost:8000/predict?home=England&away=Brazil'
-
-This serves /predict and a /health endpoint. Provenance of the training
-data is returned in every response so prediction origin is traceable.
 """
 
 from __future__ import annotations
 
 from pathlib import Path
 
-from .collection import Source
 from .models import predict
+from .storage import count_matches, iter_matches
 
-# Default provenance: the free/public training set this repo ships with.
-DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data" / "matches.csv"
+# The SQLite database holds the free/public training set the repo ships with.
+DB_PATH = Path(__file__).resolve().parent.parent.parent / "betforge.db"
 
-_src = Source(name="free-public-international", url=None, license_note="MIT public dataset")
+_matches: list | None = None
 
 
-def _load_matches() -> "list":
-    p = DATA_DIR
-    if _src.matches:
-        return _src.matches
-    if p.exists():
-        _src.ingest_csv(p)
-    return _src.matches
+def load_matches():
+    """Load matches from SQLite once and cache for the app lifetime."""
+    global _matches
+    if _matches is not None:
+        return _matches
+    if not DB_PATH.exists():
+        _matches = []  # /health will report 0; /predict will 503
+        return _matches
+    _matches = list(iter_matches(DB_PATH))
+    return _matches
 
 
 def build_app(*, load_on_start: bool = True):
-    """Create the FastAPI app. Importable so tests can build it without the ASGI server."""
+    """Create the FastAPI app. Importable so tests can build it without ASGI."""
     from fastapi import FastAPI, Query
 
     app = FastAPI(title="BetForge", version="0.1.0")
 
     if load_on_start:
-        _load_matches()
+        load_matches()
 
     @app.get("/health")
     def health():
-        return {"status": "ok", "matches_loaded": len(_src.matches), "source": _src.name}
+        return {
+            "status": "ok",
+            "matches_loaded": len(load_matches()),
+            "source": "betforge.db (sqlite)",
+            "adb": str(DB_PATH),
+        }
 
     @app.get("/predict")
     def do_predict(
@@ -55,17 +61,17 @@ def build_app(*, load_on_start: bool = True):
         recent: int | None = Query(default=None, ge=1),
         rho: float = Query(default=0.0),
     ):
-        matches = _src.matches
+        matches = load_matches()
         if not matches:
             from fastapi import HTTPException
 
-            raise HTTPException(503, "no training data loaded; provide data/matches.csv")
+            raise HTTPException(503, "no training data in betforge.db; run scripts/ingest_db.py")
         p = predict(home, away, matches, recent=recent, rho=rho)
         out = p.as_dict()
         out["provenance"] = {
-            "source": _src.name,
-            "license_note": _src.license_note,
+            "source": "betforge.db (sqlite)",
             "n_matches": len(matches),
+            "db_rows": count_matches(DB_PATH) if DB_PATH.exists() else 0,
         }
         return out
 

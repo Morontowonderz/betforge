@@ -16,3 +16,7 @@ build/
 # Data is not committed by default (large / licensed)
 data/*.csv
 !data/.gitkeep
+
+# SQLite database is a build artifact (regenerate via scripts/ingest_db.py)
+betforge.db
+betforge.db-*
