@@ -1,0 +1,92 @@
+# Markets | API 3.0
+URL: https://docs.sportmonks.com/v3/tutorials-and-guides/tutorials/odds-and-predictions/markets
+
+Markets | API 3.0
+
+# Markets
+
+The Markets endpoints let you look up market IDs and names before requesting odds. Availability depends on the feed, bookmaker, league and fixture.
+
+#### Premium directory pagination and ordering
+
+The Premium markets directory supports pagination and sorts results by `id`. Use `order=asc` or `order=desc` and keep the same order and page size while retrieving the directory.
+
+```
+GET https://api.sportmonks.com/v3/odds/markets/premium?api_token={{apiToken}}&per_page=50&page=1&order=asc
+```
+
+```
+GET https://api.sportmonks.com/v3/odds/markets/premium?api_token={{apiToken}}&per_page=50&page=2&order=asc
+```
+
+Follow the response pagination until no more results remain; do not assume a fixed total or number of pages. The response also provides `next_cursor` for cursor navigation when available. Use the returned continuation value and authenticate each request. The `filter=populate` workaround is no longer needed.
+
+Use the `odds` namespace:
+
+```
+https://api.sportmonks.com/v3/odds/markets
+```
+
+Authenticate requests with your API token. See Authentication.
+
+### Requesting markets
+
+#### GET All Markets
+
+Retrieve the market directory and follow any response pagination to obtain the remaining results.
+
+```
+GET https://api.sportmonks.com/v3/odds/markets?api_token={{apiToken}}
+```
+
+Example response excerpt:
+
+```
+{
+  "data": [
+    {
+      "id": 1,
+      "legacy_id": 1,
+      "name": "Fulltime Result",
+      "developer_name": "FULLTIME_RESULT",
+      "has_winning_calculations": true
+    },
+    {
+      "id": 2,
+      "legacy_id": 63,
+      "name": "Double Chance",
+      "developer_name": "DOUBLE_CHANCE",
+      "has_winning_calculations": false
+    },
+    {
+      "id": 3,
+      "legacy_id": null,
+      "name": "X Goal",
+      "developer_name": "X_GOAL",
+      "has_winning_calculations": false
+    }
+  ]
+}
+```
+
+Use the v3 `id` in filters and odds requests. The `legacy_id` is the API 2.0 identifier, retained for migration reference. The `has_winning_calculations` flag indicates whether winning odds calculations are supported for that market. The shared reference specifies winning odds availability for pre-match Standard Odds only.
+
+#### GET Markets by ID
+
+Append a market ID. For Alternative Match Goals, use ID 5:
+
+#### GET Markets by Search by Name
+
+Add `/search/{search_query}` to the base URL and URL-encode the search term. A more specific query produces more relevant matches.
+
+### Selecting and filtering
+
+Use `select` to request the fields you need:
+
+There are no include options for market endpoints. See the filtering tutorial for supported filtering syntax.
+
+### Market availability reference
+
+This table was checked against the shared Bookmakers & Markets reference on 15 October 2026. It includes the source's Standard pre-match, Standard in-play and Premium availability columns. Availability can change and is not guaranteed for every bookmaker or fixture.
+
+Standard in-play odds are available for bet365 only. Premium supplies pre-match odd

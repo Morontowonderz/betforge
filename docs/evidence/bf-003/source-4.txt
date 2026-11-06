@@ -1,0 +1,86 @@
+# Where our data comes from, how we protect it, and what you may do with it
+This is the page for the questions that come up before anyone signs anything. How sports data is collected and checked, what happens when a number is wrong, how we handle personal data under GDPR, how the API is monitored, and what our terms actually allow you to build.
+
+...
+
+## How a number gets from a stadium into your app
+### Being straight about rights and partners
+We do not claim to hold official rights on behalf of leagues or competitions, and we do not present partner data as our own collection. Coverage detail sits on the [coverage pages](https://www.sportmonks.com/football-api/coverage/) .
+
+### Club logos and player photos are a separate question
+Images that reach you through the API are convenience, not a licence. Our [terms of service](https://www.sportmonks.com/terms-of-service/) put the responsibility on you to hold your own rights for any logo or profile photo you display, or to use your own variation instead.
+
+...
+
+## What happens when a number is wrong
+No sports data feed is right every single time, and our [terms of service](https://www.sportmonks.com/terms-of-service/) do not pretend otherwise: we do not guarantee completeness or accuracy at all times. Any provider claiming they do is telling you something about their honesty, not their data.
+
+...
+
+1. You report it
+Email [support@sportmonks.com](mailto:support@sportmonks.com) , or go straight to your personal contact if you are on a paid plan. The fastest report includes the fixture or entity ID, the endpoint you called, what you saw and what you expected. Median first reply is under two hours in working hours, 7 days a week.
+2. We trace it back to the source
+Every value has a provenance: our own collection, or a named partner feed.
+
+...
+
+## How the API is secured, and what we have not certified
+### Access and authentication
+Access is by API token, provisioned instantly at signup and tied to your account. You generate and replace your own tokens in my.sportmonks without asking us. Tokens are the credential, so how you store them matters as much as how we issue them.
+
+...
+
+### What we have not done
+We do not hold SOC 2 or ISO 27001 certification today, and we will not imply otherwise on a page about integrity. What we do instead: answer your security questionnaire directly, with a named person, in days rather than quarters. Median first reply to any support question is under two hours.
+
+...
+
+## What you may do with the data, in plain words
+The full detail is in the [terms of service](https://www.sportmonks.com/terms-of-service/) and the terms are what govern. This is the short version, so you can check your plan against it in a minute instead of a meeting.
+Go ahead
+
+...
+
+## Measured, not promised
+### Reporting a vulnerability or a suspected breach
+If you have found a security issue in our API, dashboard or website, email [support@sportmonks.com](mailto:support@sportmonks.com) with enough detail to reproduce it. Reports are handled confidentially and with priority. Median first reply across all support email is under two hours in working hours, 7 days a week, and it comes from a named person rather than an auto-reply.
+
+...
+
+## A short checklist for integrating securely
+### Respect the rate limit and back off properly
+Handle `429` responses with exponential backoff rather than an immediate retry loop, and cache what does not change every second. Current limits are documented in the [API docs](https://docs.sportmonks.com/football/) .
+✓
+
+...
+
+### When you do ask us, send these six things
+[Read the documentation](https://docs.sportmonks.com/football/) [Ask a question](https://www.sportmonks.com/contact-support/)
+Talk to a person
+
+...
+
+## Who to contact, and how fast we answer
+### Data looks wrong
+A score, a stat, a lineup, a missing fixture. Include the entity or fixture ID and the endpoint you called.
+[support@sportmonks.com](mailto:support@sportmonks.com)
+
+...
+
+### Things you do not need to contact anyone about
+* ✓ Generate or replace your API tokens
+* ✓ Change which leagues your plan covers
+* ✓ Upgrade, downgrade or cancel your plan
+* ✓ Add or remove add-ons
+
+...
+
+### Who you are actually contracting with
+[Terms of service](https://www.sportmonks.com/terms-of-service/) and [privacy policy](https://www.sportmonks.com/privacy-policy/)
+Procurement and legal
+
+...
+
+## Still have a question this page did not answer?
+* [Terms and Conditions](https://www.sportmonks.com/terms-of-service/)
+* [Sitemap](https://www.sportmonks.com/sitemap/)

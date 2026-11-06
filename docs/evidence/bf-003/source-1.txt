@@ -1,0 +1,74 @@
+# Terms of service
+## Please read these terms and conditions carefully. By using our site and services you agree to be bound by the terms and conditions listed in the following points. It is your responsibility, the user, customers or prospective customer to read the terms and conditions before proceeding to use our site or services.
+### Terms of use
+We may revise these terms and conditions page at any time. You are expected to check this page regularly to take notice of any changes we make, as they are binding on you.
+These terms and conditions ("Agreement") sets forth the general terms and conditions of your use of the [api-football.com](https://www.api-football.com/) website ("Website" or "Service") and any of its related products and services (collectively, "Services").
+
+...
+
+### Accounts and membership
+In case of a formal complaint or legal notice from a recognized rights holder (such as a league, federation, or event organizer) regarding the use of our data by a client, we reserve the right to immediately suspend or terminate the client's access to the API, without refund, in order to comply with legal obligations and protect the integrity of our services.
+
+...
+
+### Subscription
+To subscribe to our API you can either pass:
+With us direclty on our dashboard (dashboard.api-football.com)
+With RapidApi (rapidapi.com) _(In the case, you must create an account on their platform. They are in charge of your access and the management of payments)_
+RapidAPI is an API Marketplace through which you can subscribe to our API, in this case they are in charge of your account, your payments and your access to the API.
+API data are the same regardless of the subscription chosen.
+**The terms of payment, renewal and cancellation are not the same depending on the method of subscription to our API.**
+
+### Plans & Payments
+**SUBSCRIPTION ON RAPIDAPI.COM :**
+Prices are based on a recurring monthly subscription based on the plan selected and overage fees may be applied when a user that exceeds a plan’s quota limits. It is important to read and understand a plan's limit before subscribing.
+Your access to the API is automatically renewed every month on the day of your subscription.
+**Daily Quota Limit Reset :**
+_The daily quota period starts at your time of subscription and ends 24 hours from that time. For instance, if you subscribed to our API at 11:30:15 UTC on June 2, your daily quota will reset at 11:30:15 UTC each day._
+**Unsubscribing and resubscribing**
+Charges once a subscription is made. If you subscribe to Example API's PRO plan, unsubscribe, then re-subscribe to Example API's PRO plan again, you would be charged twice.
+**SUBSCRIPTION ON DASHBOARD.API-FOOTBALL.COM :**
+Subscriptions on our dashboard are prepaid access to the API for a period agreed between the user and Api-football.
+Users who have opted for prepaid payment by paypal or credit card, will have access to the API for the period that has been agreed.
+Once the defined period has expired, your access to the API will be switched to the free plan. You can re-subscribe at any time from the dashboard.
+**Daily Quota Limit Reset :**
+_The daily quota period starts at 00:00:00 UTC. For instance, if you subscribed to our API at 11:30:15 UTC on June 2, your daily quota will reset at 00:00:00 UTC each day. **Unused requests are lost** ._
+**Rate Limiting Policy :**
+Failure to comply with the per-minute rate limits associated with your subscription plan, including but not limited to abusive, disproportionate, or excessive request patterns, constitutes a material breach of these Terms of Service.
+In such cases, the Provider reserves the right, at its sole discretion and without prior notice, to implement automatic suspensions through its firewalls, impose temporary or permanent access restrictions, or terminate the account. No refund, credit, or compensation of any kind shall be due in the event of such suspension, restriction, or termination. These measures are necessary to preserve the stability, security, and integrity of the Service for all users.
+
+...
+
+### Overages
+**SUBSCRIPTION ON RAPIDAPI.COM :**
+An overage ensues when you go over a quota for your API plan.
+It is your responsibility to review and monitor for the plan’s usage limitations. You are required to keep track of your quota usage to prevent overages. You can do this by tracking the number of API calls you make and checking the rapidApi dashboard for up-to-date usage statistics.
+**No refund can be requested for these costs.**
+
+...
+
+### Upgrade/downgrade API plans
+**SUBSCRIPTION ON DASHBOARD.API-FOOTBALL.COM :**
+You can change the Plan directly on the dashboard at any time.
+By upgrading to another plan, only the plan and the number of requests per day will be updated, the end date of your subscription will remain the same. You only pay the price difference between the two plans minus what you already used on the old plan.
+The plan upgrades take into account the discounts obtained during your subscription and the same discount is applied when calculating the price.
+Plan upgrades are final and it is not possible to downgrade to a smaller plan.
+
+### Update API pricing plans
+We can may occasionally update our pricing plans.
+However, you will remain subscribed to the version of the plan you were subscribed to.
+We do this to protect developers and make sure that the terms and conditions that they had agreed to do not change.
+If you do want to subscribe to the most recent plan, you would need to unsubscribe from your plan and then re-subscribe to the new plan.
+
+...
+
+### Data/Logos/images
+Logos, images and trademarks delivered through the API are provided solely for identification and descriptive purposes (e.g., identifying leagues, teams, players or venues). They are provided free of charge and are not counted against your API usage quota. We does not own any of these visual assets, and no intellectual property rights are claimed over them.
+
+...
+
+### Chat Support
+Available only on our dashboard, this tool provided by "Smartsupp" allows you to contact us directly by Chat.
+Paid users have access to this tool from Monday to Friday, 7AM to 4PM UTC.
+Response times may vary and are not guaranteed in terms of SLA.
+Any lack of respect towards one of our support members will not be tolerated and will result in the blocking of access to the support tool.

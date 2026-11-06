@@ -1,0 +1,20 @@
+{
+  "retrieved_on": "2026-10-21",
+  "note": "Hashes of retained extracted text/tool outputs, not proof of complete original pages.",
+  "files": {
+    "ledger.json": "0a4fae2f23da495a9bda22b4219693a3641df1661aab53e18f4c8588895c1e58",
+    "retrieval-additional.json": "af547824689320b0e40746f52f8aed8fff9eb78cdcc5b0d15a26e50bba126354",
+    "retrieval-markets.json": "9a5c9baca0bed25f32f0a1ce71e32c65a63c3e0259219cbc9129d71ab02deb36",
+    "retrieval.json": "0ea22b1799388edb49ae045146c060e302f316f9e67399b292d90cf55420f970",
+    "search-odds.json": "6aa59cc73101ccfb36351b98292d887a9792a4f36ad515661b6f1361a0d2373f",
+    "source-1.txt": "f58c3bc2b83b8448566fd064ba4d6ab670e8a7b84f0f769788a785f380f6b496",
+    "source-10.txt": "92959cc0b8b319424e38bb1062222648aaa8d909567c4bf3ccc9d5887a6da44b",
+    "source-2.txt": "80f3a5e764df722a454d5982aecf5574cfec6defc00c2d86c91ca1992ff2dc29",
+    "source-4.txt": "a316096bf864e64c2f0e3186723a17c91cf06c5cd39da7cfd98a83564f4d40b1",
+    "source-5.txt": "4f15d2699d0ec7a80b1c14eee85703ec191b5ca749d4eeb03329ea68d0bd2d8b",
+    "source-6.txt": "7a140ceabfa6814f163b790cbd4422b4af74e2e8efb369eb824961e89147d5d6",
+    "source-7.txt": "616c567c02e8abf369a253bede8026ed1f4c37db6645a708541ba1983bcdd5d0",
+    "source-8.txt": "5f1801ef1f29ef6e4c0766a80d7846979f53a5a540a2c5e56c0af944e4d978c3",
+    "source-9.txt": "3ba7d02e29cf3e3c4ea1746aead7e675f02d9e6a7a205a7aeafd80c061cb26b0"
+  }
+}

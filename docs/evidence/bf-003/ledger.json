@@ -1,0 +1,147 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "id": 1,
+      "url": "https://www.api-football.com/terms",
+      "title": "",
+      "accessed": "2026-10-21",
+      "quotes": [
+        {
+          "text": "In case of a formal complaint or legal notice from a recognized rights holder",
+          "added": "2026-10-21"
+        },
+        {
+          "text": "Subscriptions on our dashboard are prepaid access to the API for a period agreed between the user and Api-football.",
+          "added": "2026-10-21"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "url": "https://www.api-football.com/pricing",
+      "title": "",
+      "accessed": "2026-10-21",
+      "quotes": [
+        {
+          "text": "100 Requests / day",
+          "added": "2026-10-21"
+        },
+        {
+          "text": "7 500 Requests / day",
+          "added": "2026-10-21"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "url": "https://www.api-football.com/documentation-v3",
+      "title": "",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": 4,
+      "url": "https://www.sportmonks.com/integrity-support",
+      "title": "",
+      "accessed": "2026-10-21",
+      "quotes": [
+        {
+          "text": "We do not claim to hold official rights on behalf of leagues or competitions",
+          "added": "2026-10-21"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "url": "https://docs.sportmonks.com/v3/api-faq.md",
+      "title": "",
+      "accessed": "2026-10-21",
+      "quotes": [
+        {
+          "text": "14-day paid-plan trial with no credit card required upfront",
+          "added": "2026-10-21"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "url": "https://www.sportmonks.com/terms-of-service",
+      "title": "",
+      "accessed": "2026-10-21",
+      "quotes": [
+        {
+          "text": "Reselling Sportmonks’ data without approval is not allowed.",
+          "added": "2026-10-21"
+        },
+        {
+          "text": "distribution, transfer, and storage of data provided by our services is allowed",
+          "added": "2026-10-21"
+        },
+        {
+          "text": "you need to provide Sportmonks with a valid credit or debit card",
+          "added": "2026-10-21"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "url": "https://docs.sportmonks.com/v3/api/rate-limit",
+      "title": "",
+      "accessed": "2026-10-21",
+      "quotes": [
+        {
+          "text": "**Growth:** 2,500 API calls / entity / hour",
+          "added": "2026-10-21"
+        },
+        {
+          "text": "3,000 Fixture requests",
+          "added": "2026-10-21"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "url": "https://www.api-football.com/news/post/how-to-get-started-with-api-football-the-complete-beginners-guide",
+      "title": "",
+      "accessed": "2026-10-21",
+      "quotes": [
+        {
+          "text": "These two ID sets are not interchangeable.",
+          "added": "2026-10-21"
+        },
+        {
+          "text": "no historical data is stored whatsoever",
+          "added": "2026-10-21"
+        },
+        {
+          "text": "Updates come every 5 to 60 seconds",
+          "added": "2026-10-21"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "url": "https://docs.sportmonks.com/v3/tutorials-and-guides/tutorials/odds-and-predictions/live-inplay-odds",
+      "title": "",
+      "accessed": "2026-10-21",
+      "quotes": [
+        {
+          "text": "In-play (live) odds data requires the Odds add-on (€14-€69 depending on your base plan).",
+          "added": "2026-10-21"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "url": "https://docs.sportmonks.com/v3/tutorials-and-guides/tutorials/odds-and-predictions/markets",
+      "title": "",
+      "accessed": "2026-10-21",
+      "quotes": [
+        {
+          "text": "Standard in-play odds are available for bet365 only.",
+          "added": "2026-10-21"
+        }
+      ]
+    }
+  ]
+}

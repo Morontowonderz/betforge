@@ -1,0 +1,72 @@
+# Live(Inplay) odds | API 3.0
+URL: https://docs.sportmonks.com/v3/tutorials-and-guides/tutorials/odds-and-predictions/live-inplay-odds
+
+Live(Inplay) odds | API 3.0
+
+# Live(Inplay) odds
+
+> 📦 Add-on required
+> 
+> In-play (live) odds data requires the Odds add-on (€14-€69 depending on your base plan).
+> 
+> This add-on includes both pre-match and in-play odds data.
+> 
+> Available with all base plans (Starter, Growth, Pro, Enterprise). View pricing and add-ons →
+> 
+> 💰 Bundle Available: Save by combining with Predictions (€15-€149 total depending on plan).
+
+In the previous sections, you’ve learnt about pre-match odds and how to retrieve them via our API. Now, let’s take a look at live odds.
+
+Live (in-play) odds are available with the Odds add-on, which can be added to any base plan (Starter, Growth, Pro, Enterprise).
+
+An overview of all the options available to request pre-match odds: 
+
+- GET All Inplay Odds: returns all the live odds. 
+- GET Inplay Odds by Fixture ID: returns the live odds from your requested fixture id. 
+- GET Inplay Odds by Fixture ID and Bookmaker ID: returns the live odds filtered on bookmaker id from your requested fixture id. 
+- GET Inplay Odds by Fixture ID and Market ID: returns the live odds filtered on market id from your requested fixture id. 
+
+For all the inplay odds endpoints the base URL is the same: 
+
+`https://api.sportmonks.com/v3/football/odds/inplay`
+
+Per endpoint the rest of the URL requires additional information. We will explain this per endpoint.
+
+## Requesting live odds
+
+### GET All Inplay Odds
+
+The first option is to request all the inplay odds available in our APIs. With this information, you can determine if the odds you’re interested in are available.
+
+The URL to get all inplay odds is the same as the base URL for inplay odds. All you have to do is authorize the request with your API token. Check our authentication section for more info.
+
+Response
+
+Let’s take a look together at the key values the API returns:
+
+- `id`: the unique id of the odd 
+- `fixture_id`: the unique fixture id the odd is available for 
+- `external_id`: the unique id of the odd from the bookmaker
+- `market_id`: the unique id of the market the odd belongs to 
+- `bookmaker_id`: the unique id of the bookmaker who offers the odd 
+- `label`: the label name of the odd 
+- `value`: the odd value 
+- `name`: the name of the odd 
+- `sort_order`: n/a 
+- `market_description`: the description of the market the odd belongs to
+
+Now you’ve gathered an overview of the available inplay odds. You can also retrieve the odds for only a specific fixture.
+
+### GET Inplay Odds by Fixture ID
+
+A lot of our customers are not interested in all odds, but only in odds of a specific fixture. This endpoint is perfectly suited for this. The only thing you’ve to do is parse the `fixture_id` you want the odds for:
+
+`https://api.sportmonks.com/v3/football/odds/inplay/``fixtures/{fixture_id}`
+
+For example, if you’re interested in the inplay odds available for Celtic vs Rangers (fixture id: 18535517)
+
+Response
+
+### GET Inplay Odds by Fixture ID and Bookmaker ID
+
+You can also opt for the option to request th

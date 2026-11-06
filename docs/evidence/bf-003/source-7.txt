@@ -1,0 +1,289 @@
+Your rate limit defines how many API calls you can make per entity per hour, based on your active plan and any API call add-ons you’ve purchased.
+
+**Rate limits per plan**
+
+Each plan includes a fixed number of API calls per entity per hour:
+
+- **Free**: 3,000 API calls / entity / hour — covers the Danish Superliga and Scottish Premiership, no credit card required, no expiry
+- **Starter**: 2,000 API calls / entity / hour
+- **Growth:** 2,500 API calls / entity / hour
+- **Pro**: 3,000 API calls / entity / hour
+- **Enterprise**: 5,000 API calls / entity / hour
+If you’ve purchased API call add-ons, these increase your hourly limit accordingly.
+
+Understanding and optimising your API usage is critical for building reliable applications. This guide explains how rate limits work, how to stay within them, and strategies for maximum efficiency.
+
+#### Quick summary
+
+**Default limits:**
+
+- Limits are per entity, not per endpoint
+- Resets after 1 hour from first request
+- Track usage in real-time via response headers
+**When you hit the limit:**
+
+- You receive a `429 Too Many Requests` error
+- You can still call other entities
+- Wait for reset or upgrade your plan
+**Pro tip:** Use includes, cache reference data, and implement smart polling to reduce API calls by 50-80%.
+
+#### 1. How rate limits work
+
+**Key points:**
+
+- Limits are **per entity** (Fixture, Team, Player, etc.)
+- The hour starts from your **first request** to that entity
+- After 1 hour from the first request, your limit **resets**
+- Different entities have **separate limits**
+**Example timeline**
+
+**What counts as a request?**
+
+**Each of these counts as ONE request:**
+
+- `GET /fixtures/123`
+- `GET /fixtures?date=2026-03-02`
+- `GET /fixtures/123?include=participants;events;statistics`
+- Each page in paginated results
+- A request that returns no results (a valid query with an empty result set still consumes one request against the relevant entity)
+**These count as SEPARATE requests:**
+
+- `GET /fixtures/123` (1 Fixture request)
+- `GET /teams/456` (1 Team request)
+- Different entities = different rate limit buckets
+
+#### 2. Understanding entities vs endpoints {#entities-vs-endpoints}
+
+This is crucial: **Rate limits are per entity, not per endpoint.**
+
+**Entity examples**
+
+Entity
+
+Endpoints That Use This Entity
+
+**Fixture**
+
+`/fixtures`, `/fixtures/{id}`, `/fixtures/date/{date}`, `/livescores`
+
+**Team**
+
+`/teams`, `/teams/{id}`, `/teams/search/{name}`
+
+**Player**
+
+`/players`, `/players/{id}`, `/players/search/{name}`
+
+**League**
+
+`/leagues`, `/leagues/{id}`, `/leagues/search/{name}`
+
+**Season**
+
+`/seasons`, `/seasons/{id}`, `/seasons/search/{name}`
+
+**Type**
+
+`/core/types`, `/core/types/{id}`
+
+**Venue**
+
+`/football/venues`, `/football/venues/{id}`
+
+**Coach**
+
+`/football/coaches`, `/football/coaches/{id}`
+
+**Referee**
+
+`/football/referees`, `/football/referees/{id}`
+
+**Example Scenario**
+
+**Why this matters**
+
+On the Growth Plan could theoretically make:
+
+- 3,000 Fixture requests
+- 3,000 Team requests
+- 3,000 Player requests
+- 3,000 League requests
+**= 12,000+ total requests per hour** (if you use multiple entities)
+
+#### 2a. My Sportmonks endpoints and entity buckets
+
+`/my/*` endpoints don't have a separate rate limit bucket of their own, they count against the entity bucket that matches the data they return:
+
+`/my/*` endpoint
+
+Rate limit bucket used
+
+`/my/leagues`
+
+**League**
+
+`/my/usage`
+
+**Resource**
+
+`/my/resources`
+
+**Resource**
+
+#### 3. Monitoring your usage
+
+**Check response headers**
+
+Every successful API response includes a `rate_limit` object in the JSON body:
+
+**Fields explained:**
+
+- `resets_in_seconds` - Time until limit resets (in seconds)
+- `remaining` - Requests left for this entity
+- `requested_entity` - Which entity this applies to
+**Track in your code**
+
+**Usage dashboard**
+
+Check real-time usage at:
+
+- **API endpoint:** `GET /my/usage` - Programmatic usage data
+**Example response:**
+
+#### 4. Optimisation strategies
+
+**Strategy 1: Use includes**
+
+**The problem:**
+
+**The Solution:**
+
+**Impact:** Reduced from 3 requests to 1 = **67% savings**
+
+**Strategy 2: Cache reference data**
+
+**Reference data changes rarely - cache it!**
+
+**What to cache:**
+
+- Types (statistics types, event types, etc.)
+- States (fixture states)
+- Leagues (your available leagues)
+- Venues (stadium information)
+- Markets & Bookmakers (if using odds)
+**How long to cache:**
+
+- Types & States: **1 week** (rarely change)
+- Leagues: **1 day** (occasionally update)
+- Venues: **1 week** (stable data)
+- Teams/Players: **1 hour** (injuries/transfers happen)
+**Example implementation:**
+
+**Impact:** Instead of 1000+ Type requests, you make 1 = **99.9% savings**
+
+**Strategy 3: Batch operations**
+
+**Use Multi-ID endpoints:**
+
+**Impact:** Reduced from 10 requests to 1 = **90% savings**
+
+**Strategy 4: Smart polling for livescores**
+
+**Don't poll everything constantly:**
+
+**Impact:** Reduced polling frequency
+
+**Strategy 5: Pagination optimisation**
+
+**Use** `filters=populate`** for database population:**
+
+**Impact:** Reduced from 40 requests to 1 = **97.5% savings**
+
+**Summary: Combined impact**
+
+**Before optimisation:**
+
+**After Optimisation:**
+
+#### 5. Handling rate limit errors
+
+**What happens when you hit the limit?**
+
+**You receive a** `429 Too Many Requests`** response:**
+
+**Implement retry logic**
+
+**Client-side rate limiting**
+
+**Prevent hitting limits in the first place:**
+
+#### 6. Code examples
+
+#### 7. Common scenarios
+
+**Scenario 1: Building a livescore app**
+
+**Challenge:** Need frequent updates without hitting limits
+
+**Solution:**
+
+**API Calls:** ~360/hour during live matches, ~60/hour otherwise
+
+**Scenario 2: Populating database**
+
+**Challenge:** Need to fetch thousands of fixtures
+
+**Solution:**
+
+**API Calls:** ~2-5 requests for entire season (vs 100+ without populate)
+
+**Scenario 3: Statistics dashboard**
+
+**Challenge:** Need lots of statistics data
+
+**Solution:**
+
+**API Calls:** 1 for data + 1 for types (cached forever)
+
+#### Best practices summary
+
+**DO**
+
+- Use includes to combine data
+- Cache reference data (types, states, leagues)
+- Implement client-side rate limiting
+- Monitor your usage regularly
+- Use `filters=populate` for bulk operations
+- Handle 429 errors gracefully with retry logic
+- Poll intelligently (only what's needed, when needed)
+- Batch requests with multi-ID endpoints
+**DON'T**
+
+- Poll every endpoint every 5 seconds
+- Fetch types/states/leagues repeatedly
+- Make separate requests when includes work
+- Ignore rate limit warnings
+- Request more data than you need
+- Skip error handling
+
+#### Quick checklist
+
+Use this to optimise your implementation:
+
+#### See also
+
+**Need Help?**
+
+**For Enterprise plans**
+
+Enterprise plans include a temporary burst buffer on top of the standard hourly limit.
+
+- The buffer allows short-term spikes (for example, during match days or major tournaments).
+- Once the standard limit is reached:
+
+- Requests continue until the buffer threshold is exceeded.
+- After the buffer is exceeded:
+
+- Requests may be temporarily throttled
+- Notifications are sent
+- The account may be flagged for review

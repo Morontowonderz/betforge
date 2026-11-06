@@ -1,0 +1,144 @@
+### Free trial period
+
+To start a subscription plan with a 14-day free trial, you need to provide Sportmonks with a valid credit or debit card so that the trial can be activated.
+
+To avoid being billed, you must manually cancel your subscription within the 14-day trial period. Failure to do so will result in your credit or debit card being billed on the first day after your free trial period expires.
+
+The free trial period is only available for first-time users of Sportmonks’ services. Each Sportmonks account is eligible for one 14-day free trial period. Switching plans does not make you eligible for another free trial period.
+
+We kindly ask you to refrain from creating multiple accounts to abuse the 14-day free trial offer. Sportmonks.com is allowed and will take action against this kind of behaviour.
+
+### Subscription fees
+
+Subscription fees are paid upfront, monthly, or annually and are automatically renewed. By subscribing to our services, you permit Sportmonks.com to process your credit card monthly/annually, corresponding to the date you subscribed or the date your trial period ended.
+
+### Cancellation & refund policy
+
+Sportmonks provides digital subscription-based access to sports data services, including APIs, widgets, add-ons, special packages, and related data products. Due to the nature of these digital services, all subscription fees are charged upfront for the selected billing period and are non-refundable once payment has been processed and access has been granted.
+
+By subscribing to Sportmonks’ paid services, you acknowledge that you are purchasing access to digital data services for a specific billing period. Once access to the service has been activated, payments already processed are final and will not be refunded, credited, or prorated unless Sportmonks determines that an exception applies due to a billing error, unauthorised charge, service disruption, or another justified reason approved by Sportmonks.
+
+You may cancel your subscription at any time through MySportmonks or by contacting our support team. Cancelling your subscription prevents renewal for the next billing cycle. Your subscription will remain active until the end of the current paid billing period, unless stated otherwise. Cancellation does not entitle you to a refund for any unused part of the current billing period.
+
+### Monthly Subscriptions
+
+Monthly subscription fees are charged upfront at the start of each monthly billing cycle. Your subscription will automatically renew each month unless cancelled before the next renewal date.
+
+If you cancel a monthly subscription, the cancellation will take effect at the end of the current billing cycle. You will continue to have access to your subscribed services until that date.
+
+Monthly subscription payments that have already been processed are non-refundable, and no prorated refund, account credit, or discount will be issued for the unused portion of the billing cycle.
+
+### Annual Subscriptions
+
+Annual subscription fees are charged upfront at the start of the annual billing cycle. Your subscription will automatically renew annually unless cancelled before the next renewal date.
+
+If you cancel an annual subscription, the cancellation will take effect at the end of the current annual billing cycle. You will continue to have access to your subscribed services until that date.
+
+Annual subscription payments that have already been processed are non-refundable, and no prorated refund will be issued for the unused portion of the billing period, unless Sportmonks approves an exception.
+
+In exceptional cases, Sportmonks may, at its sole discretion, offer a future discount or account adjustment instead of a refund. Such exceptions may be considered only where there is a clear and justified reason, such as a confirmed billing error, service disruption, unauthorised charge, or pre-approved commercial agreement.
+
+### Disputes
+
+By subscribing to our paid data services, you are agreeing to comply with the terms outlined in our Terms of Service. Initiating unwarranted payment disputes not only violates these terms but also disrupts our ability to provide you with uninterrupted service (access to our data) as a customer. We understand that there may be instances where disputes are necessary due to billing errors or unauthorised charges. In such cases, we encourage you to reach out to our customer support team for prompt resolution at [[email protected]](/cdn-cgi/l/email-protection).
+
+### Subscription change – new invoice
+
+It is important to note that for every subscription change, a new invoice for the new subscription will be generated and must be paid for immediate access to the new subscription. Rest assured, our payment system takes into account the duration of unused time from your previous invoice. This amount will then be deducted from the new invoice that was generated for your new subscription and billing cycle.
+
+### Disclaimer on Tournament Special Packages
+
+Please note that any special packages added to your plan can be easily removed at any time by editing your subscription through our user-friendly MySportmonks platform. As a valued Sportmonks customer, we want to remind you about managing any special packages included in your subscription. Please be aware that once a tournament concludes, it is your responsibility to remove any related special packages if you no longer require access to the data. This self-service option allows you to tailor your subscription to your current needs, ensuring you only pay for the services that are most relevant to you. Please note that some customers choose to keep these packages active for continued access to historical data, so the decision to remove them is entirely up to you. Simply log in to your account, navigate to the subscription management section, select the “edit subscription” option and make the necessary adjustments to your plan. Our support team is always available to help if you need further assistance.
+
+### **VAT**
+
+All prices are exclusive of VAT as per our local policy. The VAT amount is determined based on the country; our billing system automatically calculates this. Where applicable, VAT will be applied at the standard rate. If you have a valid VAT number, you can use this to exempt taxation charges.
+
+### Currency
+
+All payments are processed in Euros (€). If you prefer to pay in any other currency, please note that our billing system will automatically convert the amount to Euros at the current exchange rate. As the exchange rate fluctuates based on the market, please be aware that we cannot be held responsible for any potential losses incurred.
+
+### Terms of use
+
+When subscribing to Sportmonks.com, you agree to keep your contact details up-to-date.
+
+Your Sportmonks account is your own personal account and may not be shared with other developers.
+
+We are not responsible for how you choose to use the feed or for any potential consequences of using our data.
+
+We provide our data as is and make no guarantees of 100% accuracy because, in the end, the data is gathered by humans, which is always liable to various errors. However, you can expect that we will do our utmost best to retain our high quality to the best of our abilities.
+
+Coverage gaps may exist across certain leagues or competitions. Sportmonks does not guarantee the completeness, accuracy, or availability of data at all times and disclaims all liability for any resulting discrepancies or omissions.
+
+Reselling Sportmonks’ data without approval is not allowed. This means that you cannot directly sell the data we provide. We provide data for you to build apps, websites, games, and so on. If you sell our data directly, you are competing with Sportmonks with our own data. This is not allowed.
+
+In principle, if you use our data to create something based on our data and start earning money from your creation, everything is fine. If you are unsure if your plan is according to these rules, don’t be afraid to explain your plan and ask if this is allowed.
+
+Our data is exclusively available per domain, and the prices listed on our website apply. It’s important to note that the pricing will be adjusted accordingly for multiple domains.
+
+### Copyright
+
+Our services and related applications are copyright-protected.
+
+Reproduction, transferring, distribution, or storage of our services is strictly prohibited without the prior permission of Sportmonks. However, distribution, transfer, and storage of data provided by our services is allowed, but reselling the product is forbidden without our consent.
+
+All the material on our website, including text, illustrations, audio and video clips, are protected by copyright. Usage of material from Sportmonks is strictly for personal and non-commercial use. Neither the website nor the materials may be modified, reproduced, distributed, publicly displayed, or otherwise used without prior consent from Sportmonks.
+
+### Jurisdiction
+
+These terms of service will be governed by, construed, and enforced according to the laws of the Netherlands. Any actions you or Sportmonks.com bring to enforce these terms of service or any matters related to the website shall be subject to the Netherlands’ courts’ exclusive jurisdiction.
+
+### General Terms
+
+Sportmonks.com reserves the right to terminate any customer’s account(s) with immediate effect if they are deemed to be in direct violation of the terms set out in this document.
+
+By using our services, you agree to be bound by these terms.
+
+These terms are subject to change.
+
+We hold no responsibility for any losses incurred through the use or termination of services provided by sportmonks.com.
+
+### Changes to the price plans
+
+Prices of our subscriptions may be subject to change from time to time. However, any price changes or changes to our service plans will apply to you no earlier than 30 days after the announcement email.
+
+### Logo/image rights
+
+All logos and profile photos are copyrighted by their legal owner. To display these types of content in your app or website, you have to arrange proof of intellectual property yourself.
+
+Regarding the use of logos and photos from the Sportmonks API, “proof of intellectual property” typically refers to demonstrating that you have the legal right or permission to use the copyrighted content in your application.
+
+Here are some general steps that are commonly taken by developers to arrange proof of intellectual property:
+
+**Permissions from Legal Owners:**
+ Obtain explicit permission from the legal owners to use the logos and profile photos in your app. This could involve reaching out to the respective sports teams, leagues, or organizations and securing written consent.
+
+Alternatively, if you are unable to obtain permission from the legal owners, you can create a variation of the logos to use in your app.
+
+**License Agreements:**
+ Check if the legal owners provide specific licensing agreements for the use of their intellectual property. Some organizations may offer guidelines or terms for the use of their logos and photos.
+
+**Fair Use Consideration:**
+ Evaluate whether the use of logos and photos falls under the concept of “fair use.” Fair use allows for the use of copyrighted material for purposes such as commentary, criticism, news reporting, teaching, and research. However, it’s essential to assess whether your specific use case qualifies as fair use.
+
+**Attribution:**
+ Clearly attribute the logos and photos to their respective owners. Include appropriate credits or acknowledgements within your app to recognize the intellectual property rights of the content owners.
+
+**Legal Consultation:**
+ If in doubt, seek legal advice from a professional attorney who specializes in intellectual property law. They can provide guidance tailored to your specific situation and help ensure compliance with copyright laws.It’s important to note that these general suggestions may vary based on the specific content and the legal frameworks in different jurisdictions. It’s recommended to consult with legal professionals or representatives from the organizations whose logos and photos you plan to use to ensure full compliance with copyright laws.
+
+### Video rights
+
+Video highlights are embedded into URLs on video platforms like YouTube. Use at your own risk.
+
+### Availability of odds
+
+We cannot guarantee odds to be available at all times, even though we strive to present odds for every game that we host.
+
+### Prediction API
+
+Sportmonks.com delivers a prediction API with predictions of matches calculated by our own systems.
+
+Sportmonks.com is not responsible for any direct or indirect losses or damages suffered by the customer as a result of using Sportmonks data, including but not limited to damages caused by commercial loss, loss of benefits, loss on anticipated earnings, winnings or other profits, interruption of business, loss of commercial information, or any other pecuniary and or consecutive losses.
+
+Sportmonks.com is not responsible for any winnings made or losses suffered on third-party websites/applications that use Sportmonks’ data. No responsibility is being acknowledged or accepted related to the following matters: data errors, mistakes, registration errors, spelling, criminal use, the advice provided by Sportmonks.com, or any claims arising because of damages incurred by a customer.

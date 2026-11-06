@@ -1,0 +1,65 @@
+> For the complete documentation index, see [llms.txt](https://docs.sportmonks.com/v3/llms.txt). Markdown versions of documentation pages are available by appending `.md` to page URLs; this page is available as [Markdown](https://docs.sportmonks.com/v3/api-faq.md).
+
+# API FAQ
+Answers to common questions about the Sportmonks Football API v3, including access, coverage, odds, integration and troubleshooting.
+
+...
+
+## Getting started and migration
+### Why was API 3.0 introduced, and why should I migrate?
+API 3.0 introduces a data model designed to support more sports and continued product development. Existing API 2 integrations should follow the [API 2 and API 3 comparison](https://docs.sportmonks.com/v3/welcome/differences-between-api-2-and-api-3) when planning migration.
+
+...
+
+## Data and coverage
+### Why can I access fewer players than in API 2.0?
+API 3 access is based on players who have played for teams covered by your plan. API 2 could include inactive, duplicate or non-existing player records, so raw totals are not a reliable migration comparison.
+
+### What is the difference between Standard and Advanced statistics?
+Standard and Advanced core-statistics packages describe the previous pricing model. Under the current setup, core statistics are included across paid base plans; plans scale by league capacity and API usage. Separate add-ons such as xG still have their own tiers. Check league-level coverage and your active subscription before relying on a statistic.
+See the current pricing announcement: https://www.sportmonks.com/blogs/introducing-our-new-pricing-setup/
+
+...
+
+## Odds
+### When do odds become available?
+Standard Bet365 and Premium prices can appear about three weeks ahead; other Standard bookmakers typically about two weeks ahead. Timing varies by bookmaker and event.
+
+...
+
+### What are winning odds?
+The `winning` flag identifies a winning selection. It is supported for Standard pre-match odds. A default `false` value alone does not establish that a selection has been settled as a loss.
+
+...
+
+## Integration and development
+### How does pagination work?
+Read the response's pagination metadata and continue while more results are available. Do not assume the first page contains everything or rely on a total page count. Respect the page-size limit of the endpoint. See [Pagination](https://docs.sportmonks.com/v3/tutorials-and-guides/tutorials/introduction/pagination).
+
+### What is the difference between includes and selects?
+`include` adds related data; `select` limits fields on the base entity. Request only what the application needs and check the endpoint's supported relationships and fields.
+
+...
+
+## Billing and plans
+### What is the difference between plans?
+Compare league allowances, data access, add-ons, request limits and billing terms on the [Football API pricing page](https://www.sportmonks.com/football-api/#plans-pricing). Check MySportmonks for the entitlements attached to your subscription.
+
+### Is there a Free plan or a trial?
+The [current plan reference](https://docs.sportmonks.com/v3/api/rate-limit) lists a Free plan for the Danish Superliga and Scottish Premiership, with no expiry or credit card requirement, and a 14-day paid-plan trial with no credit card required upfront. Check the signup flow for the applicable terms.
+
+### Can I cancel, and is annual billing available?
+Manage your subscription in MySportmonks. Check the current cancellation, renewal and annual billing terms before changing your plan. Contact sales@sportmonks.com if you need help choosing a billing option.
+
+...
+
+## Still have questions?
+Contact support@sportmonks.com with the affected endpoint, fixture or league IDs, HTTP status and a redacted example. Never include your API token.
+
+...
+
+# Agent Instructions
+## Querying This Documentation
+```
+GET https://docs.sportmonks.com/v3/api-faq.md?ask=<question>&goal=<user_goal>
+```
