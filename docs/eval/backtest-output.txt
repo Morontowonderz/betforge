@@ -1,0 +1,22 @@
+Loaded 11513 dated matches from matches.csv
+Date range: 2015-01-04 .. 2026-10-06
+
+window                         n over_freq over_pred brier_ov  log_ov btts_freq btts_pred brier_bt  log_bt
+----------------------------------------------------------------------------------------------------------
+train<2019,test2019         1156    0.7318    0.7059   0.2005   0.036    0.4152    0.4451   0.2544  -0.069
+train<2020,test2020          356    0.6770    0.6463   0.2221   0.046    0.4607    0.4126   0.2450   0.110
+train<2021,test2021         1115    0.7184    0.6883   0.1996   0.043    0.4009    0.4288   0.2486  -0.067
+train<2022,test2022          970    0.6979    0.6848   0.2164   0.019    0.4165    0.4482   0.2501  -0.073
+train<2023,test2023         1064    0.7556    0.7240   0.1849   0.043    0.4427    0.4670   0.2511  -0.054
+train<2024,test2024         1231    0.7108    0.7018   0.2053   0.013    0.4476    0.4632   0.2496  -0.034
+----------------------------------------------------------------------------------------------------------
+POOLED                      5892    0.7203    0.6979   0.2025   0.032    0.4272    0.4483   0.2505   0.048
+
+=== Interpretation ===
+calibration: realized frequency vs mean predicted p (closer = better-calibrated)
+log(realized/mean): log of realized-frequency over mean-predicted. 0 = perfect match;
+  positive = model under-predicts the market; negative = model over-predicts.
+Baseline Brier (always-predict-mean): over1.5=0.2015 btts=0.2447 (model beats baseline iff its Brier is below this).
+
+Total test matches across 6 windows: 5892
+DONE
