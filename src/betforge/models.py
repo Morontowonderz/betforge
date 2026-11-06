@@ -122,6 +122,18 @@ def _estimate_strengths(matches, recent: int | None = None):
     return strengths, lag_for, lag_against
 
 
+def precompute_strengths(matches, recent: int | None = None):
+    """Compute per-team strengths once (e.g. for a whole eval window), so the
+    per-match `predict` call can reuse them instead of re-scanning the training
+    set for every fixture. Returns (strengths, base_average) where base_average
+    is the per-match league goals estimate passed as `league_average`.
+    """
+    matches = list(matches)
+    strengths, lg_for, lg_against = _estimate_strengths(matches, recent=recent)
+    base = (lg_for + lg_against) / 2
+    return strengths, base
+
+
 def predict(
     home: str,
     away: str,
@@ -130,20 +142,29 @@ def predict(
     recent: int | None = None,
     rho: float = 0.0,
     league_average: float | None = None,
+    strengths=None,
 ) -> Prediction:
     """Predict over1.5/BTTS for `home` vs `away` from historical matches.
 
     matches: iterable of Match. recent: per-team window. league_average:
-    overall expected goals per match (defaults to observed).
+    overall expected goals per match (defaults to observed). strengths: an
+    optional precomputed {team: TeamStrength} map (see precompute_strengths)
+    to avoid re-scanning the training set for every call; when given it must
+    already be consistent with `matches`/`recent`.
     """
     matches = list(matches)
-    strengths, lg_for, lg_against = _estimate_strengths(matches, recent=recent)
+    if strengths is None:
+        strengths, lg_for, lg_against = _estimate_strengths(matches, recent=recent)
+        base_default = (lg_for + lg_against) / 2
+    else:
+        # Precomputed strengths carry no league-average; caller should pass
+        # league_average (see precompute_strengths). Fall back to a stable base.
+        base_default = 1.3
 
     hs = strengths.get(home, TeamStrength())
     as_ = strengths.get(away, TeamStrength())
 
-    base = league_average or ((lg_for + lg_against) / 2)
-    # Expected goals for home = base * home attack * away defence (and vice versa)
+    base = league_average if league_average is not None else base_default
     lam_home = base * hs.attack * as_.defence
     lam_away = base * as_.attack * hs.defence
     lam_home = max(lam_home, 0.02)

@@ -1,0 +1,23 @@
+Loaded 238854 dated club matches from matches.csv
+Date range: 2000-07-28 .. 2026-09-03
+market_weight (odds blend) = 0.5
+
+window                      n over_freq over_pred brier_ov  log_ov btts_freq btts_pred brier_bt  log_bt
+-------------------------------------------------------------------------------------------------------
+train<2019,test2019     12017    0.7473    0.7375   0.1901   0.013    0.5199    0.4870   0.2536   0.065
+train<2020,test2020      9562    0.7428    0.7385   0.1931   0.006    0.5227    0.4870   0.2548   0.071
+train<2021,test2021     13127    0.7327    0.7385   0.1982  -0.008    0.5144    0.4869   0.2543   0.055
+train<2022,test2022     12168    0.7401    0.7315   0.1939   0.012    0.5193    0.4815   0.2552   0.075
+train<2023,test2023     12501    0.7502    0.7359   0.1893   0.019    0.5217    0.4866   0.2545   0.070
+train<2024,test2024     11148    0.7487    0.7408   0.1893   0.011    0.5345    0.4927   0.2533   0.082
+-------------------------------------------------------------------------------------------------------
+POOLED                  70523    0.7435    0.7370   0.1924   0.009    0.5218    0.4869   0.2543   0.069
+
+=== Interpretation ===
+calibration: realized frequency vs mean predicted p (closer = better)
+log(realized/mean): 0 = perfect; + under-predicts; - over-predicts.
+Baseline Brier (always-predict-mean): over1.5=0.1907 btts=0.2495  (model beats baseline iff its Brier is lower)
+
+Total test matches across 6 windows: 70523
+Elapsed: 0.68s (was ~15min pure-Python)
+DONE
