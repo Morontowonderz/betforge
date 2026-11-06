@@ -13,13 +13,18 @@ Example:
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from .models import predict
 from .storage import count_matches, iter_matches
 
-# The SQLite database holds the free/public training set the repo ships with.
-DB_PATH = Path(__file__).resolve().parent.parent.parent / "betforge.db"
+# The SQLite database holds the free/public training set. Priority:
+#   1. BETFORGE_DB env var (set it in Docker, systemd, etc.)
+#   2. ./betforge.db relative to the working directory (the Docker WORKDIR /app)
+# A module-relative path is deliberately NOT used: inside a container the package
+# is installed into site-packages, so __file__ would point far from the data.
+DB_PATH = Path(os.environ.get("BETFORGE_DB", "betforge.db"))
 
 _matches: list | None = None
 

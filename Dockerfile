@@ -18,5 +18,5 @@ COPY data/matches.csv /app/data/matches.csv
 RUN python scripts/ingest_db.py --csv /app/data/matches.csv --db /app/betforge.db
 
 EXPOSE 8000
-ENV HOST=0.0.0.0 PORT=8000
+ENV HOST=0.0.0.0 PORT=8000 BETFORGE_DB=/app/betforge.db
 CMD ["uvicorn", "betforge.api:app", "--host", "0.0.0.0", "--port", "8000"]
