@@ -11,6 +11,7 @@ dependencies = []  # dependency-light: pure stdlib core; numpy/pandas optional a
 [project.optional-dependencies]
 fast = ["numpy>=1.26", "pandas>=2.0"]
 test = ["pytest>=7.0"]
+web = ["fastapi>=0.110", "uvicorn>=0.29", "httpx>=0.27"]
 
 [project.scripts]
 betforge = "betforge.cli:main"
