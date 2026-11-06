@@ -20,4 +20,3 @@ Baseline Brier (always-predict-mean): over1.5=0.2015 btts=0.2447 (model beats ba
 
 Total test matches across 6 windows: 5892
 DONE
-exit=143
