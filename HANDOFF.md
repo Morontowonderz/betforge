@@ -28,6 +28,11 @@
 - **Calibration:** near-perfect for Over1.5 (pooled log-ratio **+0.009**, 0.68s vectorized eval, 70,523 OOS matches).
 - **Skill:** Brier Over1.5 **0.1924** vs base-rate baseline **0.1907** → the model does **NOT** beat "always predict the mean". Deployed API is a **calibration tool, NOT a betting bot**. No edge claimed — per the owner's contract, ship-as-calibration-tool.
 
+### Phase 2 market-proxy warning (2026-11-06, verified)
+- The dataset has **1X2 odds only** (no O/U line). The Over1.5/BTTS market proxy is derived by fitting an independent-Poisson (lam_h, lam_a) to de-vigged 1X2 prices. 1X2 recovery MAE ~2e-3.
+- **The proxy is worse than the base rate.** Pooled all-rows: proxy Brier over15 **0.1956** vs base rate **0.1932**; proxy btts **0.2553** vs base **0.2497**. The proxy under-predicts over15 by **+0.068** and btts by **+0.081** in EVERY season 2000–2026 (implied ~2.3 goals/match vs ~2.89 actual).
+- Implication: "beating the market proxy" is a **weak gate** on this data. A model can beat it and still have no real edge. Treat any proxy win as necessary-not-sufficient; the real O/U line is absent.
+
 ---
 
 ## 2. Exact next 3 tasks (in order)

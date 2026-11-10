@@ -5,8 +5,17 @@ __pycache__/
 venv/
 *.egg-info/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 dist/
 build/
+
+# Node / Next.js (frontend)
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.turbo/
+npm-debug.log*
 
 # Secrets (never commit real values)
 .env
@@ -15,8 +24,12 @@ build/
 
 # Data is not committed by default (large / licensed)
 data/*.csv
+data/raw_fd/
 !data/.gitkeep
 
-# SQLite database is a build artifact (regenerate via scripts/ingest_db.py)
+# SQLite database is a build artifact (regenerate via scripts/seed_historical.py)
 betforge.db
 betforge.db-*
+
+# Analysis outputs
+results/
