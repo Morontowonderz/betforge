@@ -93,7 +93,6 @@ def _estimate_strengths(matches, recent: int | None = None):
     Uses last `recent` matches per team when given (else all).
     Falls back to league average (1.0) for teams with no history.
     """
-    from .normalization import Match
 
     per_team_goals_for: dict[str, list[int]] = {}
     per_team_goals_against: dict[str, list[int]] = {}

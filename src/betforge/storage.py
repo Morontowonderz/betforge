@@ -19,8 +19,8 @@ from __future__ import annotations
 
 import csv
 import sqlite3
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Iterable, Iterator
 
 from .normalization import Match
 
@@ -54,8 +54,7 @@ def run_ingest(csv_path: str | Path, db_path: str | Path) -> int:
     n = 0
     with Path(csv_path).open(newline="", encoding="utf-8") as fh:
         reader = csv.reader(fh)
-        header = next(reader, None)
-        # tolerate an optional header; skip it
+        next(reader, None)  # tolerate an optional header; skip it
         for row in reader:
             if not row or not row[0].strip():
                 continue

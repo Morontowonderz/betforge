@@ -41,9 +41,8 @@ def main(argv: list[str] | None = None) -> int:
         src = Source(name=args.name, url=args.url, license_note=args.license)
         n = src.ingest_csv(args.csv)
         valid = n
-        skipped = 0  # skipped rows are not counted here by design
         print(f"ingested {valid} valid match records from {args.csv}")
-        print("source: %s | license note: %s" % (src.name, src.license_note))
+        print(f"source: {src.name} | license note: {src.license_note}")
         print("provenance field always accompanies predictions.")
         return 0
 
@@ -51,7 +50,7 @@ def main(argv: list[str] | None = None) -> int:
     src = Source(name="local-csv", url=None, license_note="free/public")
     src.ingest_csv(args.csv)
     if not src.matches:
-        print("no valid matches found in %s" % args.csv, file=__import__("sys").stderr)
+        print(f"no valid matches found in {args.csv}", file=__import__("sys").stderr)
         return 1
     p = predict(args.home, args.away, src.matches, recent=args.recent, rho=args.rho)
     if args.json:

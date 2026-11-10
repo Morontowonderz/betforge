@@ -76,3 +76,68 @@ def test_storage_roundtrip(db_path):
     assert ms[0].home_goals >= 0 and ms[0].away_goals >= 0
     # Match objects carry the odds fields (default inf when absent)
     assert ms[0].home_odds == float("inf")
+
+
+def test_health_reports_db_key(db_path, client):
+    """/health must expose the DB path under 'db' (not the old 'adb' typo)."""
+    r = client.get("/health")
+    assert r.status_code == 200
+    assert "db" in r.json()
+    assert "adb" not in r.json()
+
+
+def test_predict_with_odds_uses_dixon_coles(db_path, client):
+    """Supplying 1X2 odds must route through the DC baseline."""
+    r = client.get("/predict", params={
+        "home": "Strong", "away": "Weak",
+        "home_odds": 1.65, "draw_odds": 3.3, "away_odds": 4.3,
+    })
+    assert r.status_code == 200
+    data = r.json()
+    assert data["provenance"]["method"] == "dixon-coles"
+    assert 0.0 < data["p_over1_5"] < 1.0
+    assert abs(data["p_home"] + data["p_draw"] + data["p_away"] - 1.0) < 0.01
+    assert "dc_rho" in data["provenance"]
+
+
+def test_predict_without_odds_uses_strength_model(db_path, client):
+    r = client.get("/predict", params={"home": "Strong", "away": "Weak"})
+    assert r.status_code == 200
+    assert r.json()["provenance"]["method"] == "strength-poisson"
+
+
+def test_predict_partial_odds_falls_back_to_strength(db_path, client):
+    """Only some odds supplied -> not a full market -> strength model."""
+    r = client.get("/predict", params={
+        "home": "Strong", "away": "Weak", "home_odds": 1.65,
+    })
+    assert r.status_code == 200
+    assert r.json()["provenance"]["method"] == "strength-poisson"
+
+
+def test_predict_with_ou_uses_dixon_coles_o25(db_path, client):
+    """Real O/U 2.5 pair -> the owner-mandated DC O2.5 path."""
+    r = client.get("/predict", params={
+        "home": "Strong", "away": "Weak",
+        "over25_odds": 1.67, "under25_odds": 2.20,
+    })
+    assert r.status_code == 200
+    data = r.json()
+    assert data["provenance"]["method"] == "dixon-coles-o25"
+    assert "p_over2_5" in data
+    assert 0.0 < data["p_over2_5"] < 1.0
+    assert "p_over25_market" in data["provenance"]
+    # DC baseline should track the de-vigged O2.5 market
+    assert abs(data["p_over2_5"] - data["provenance"]["p_over25_market"]) < 5e-3
+
+
+def test_predict_ou_with_1x2_regulariser(db_path, client):
+    r = client.get("/predict", params={
+        "home": "Strong", "away": "Weak",
+        "home_odds": 1.55, "draw_odds": 3.8, "away_odds": 5.0,
+        "over25_odds": 1.67, "under25_odds": 2.20,
+    })
+    assert r.status_code == 200
+    data = r.json()
+    assert data["provenance"]["method"] == "dixon-coles-o25"
+    assert abs(data["p_home"] + data["p_draw"] + data["p_away"] - 1.0) < 0.01
