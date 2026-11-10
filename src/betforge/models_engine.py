@@ -21,6 +21,7 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from typing import Any
 
+from .models import MAX_GOALS, joint_goal_matrix
 from .models import predict as strength_predict
 from .normalization import Match
 
@@ -85,7 +86,7 @@ class MLModel:
 
     def fit(self, rows: Sequence[dict[str, float | int | str]], targets_over: Sequence[int], targets_btts: Sequence[int]) -> bool:
         try:
-            from sklearn.ensemble import GradientBoostingClassifier  # type: ignore[import-untyped]
+            from sklearn.ensemble import GradientBoostingClassifier
         except ImportError:
             self.available = False
             self._note = "sklearn not importable; strength fallback"
@@ -121,6 +122,67 @@ class MLModel:
         pb = float(self._clf_btts.predict_proba(X)[0][1])
         # no separate O2.5 classifier in the honest fallback: derive from O1.5
         return ModelProbs(name="ml", p_over15=_clamp(po), p_over25=min(_clamp(po), 1.0), p_btts=_clamp(pb), note=self._note)
+
+
+class Stage1Lambdas:
+    """Two-stage Dixon-Coles: predict per-match λ_home / λ_away from rolling
+    team features with a gradient-boosted regressor, then build the DC matrix.
+
+    This is the repo HANDOFF's owner-flagged "XGB stage-1 lambda" attempt.
+    It is evaluated honestly (see scripts/eval_stage1.py): per-match lambdas
+    only help if they beat the base rate / closing line. Falls back to the
+    strength-Poisson model with `available=False` when sklearn is absent or
+    the sample is too small.
+    """
+
+    def __init__(self, *, rho: float = DC_DEFAULT_RHO, min_samples: int = 40) -> None:
+        self.rho = rho
+        self.min_samples = min_samples
+        self.available = False
+        self._note = "sklearn not importable; strength fallback"
+        self._feature_keys: tuple[str, ...] = ()
+        self._reg_h: Any = None
+        self._reg_a: Any = None
+
+    def fit(self, rows: Sequence[dict[str, float | int | str]], lam_home: Sequence[float], lam_away: Sequence[float]) -> bool:
+        try:
+            from sklearn.ensemble import GradientBoostingRegressor
+        except ImportError:
+            self.available = False
+            return False
+        if len(rows) < self.min_samples:
+            self.available = False
+            self._note = f"too few samples ({len(rows)} < {self.min_samples}); strength fallback"
+            return False
+        keys = tuple(k for k in rows[0] if isinstance(rows[0][k], (int, float)))
+        self._feature_keys = keys
+        X: list[list[float]] = [[float(row[k]) for k in keys] for row in rows]
+        self._reg_h = GradientBoostingRegressor(n_estimators=80, learning_rate=0.1, max_depth=2, random_state=0)
+        self._reg_h.fit(X, [float(v) for v in lam_home])
+        self._reg_a = GradientBoostingRegressor(n_estimators=80, learning_rate=0.1, max_depth=2, random_state=0)
+        self._reg_a.fit(X, [float(v) for v in lam_away])
+        self.available = True
+        self._note = "two-stage gradient-boosted lambdas (sklearn)"
+        return True
+
+    def predict(self, feature_row: dict[str, float | int | str]) -> ModelProbs:
+        if not self.available or self._reg_h is None or self._reg_a is None or not self._feature_keys:
+            return ModelProbs(name="stage1-lambdas", p_over15=0.5, p_over25=0.5, p_btts=0.5, available=False, note=self._note)
+        X: list[list[float]] = [[float(feature_row[k]) for k in self._feature_keys]]
+        lam_h = max(float(self._reg_h.predict(X)[0]), 0.05)
+        lam_a = max(float(self._reg_a.predict(X)[0]), 0.05)
+        J = joint_goal_matrix(lam_h, lam_a, self.rho)
+        p15 = p25 = btts = 0.0
+        for i in range(MAX_GOALS + 1):
+            for j in range(MAX_GOALS + 1):
+                p = J[i][j]
+                if i + j > 1:
+                    p15 += p
+                if i + j > 2:
+                    p25 += p
+                if i >= 1 and j >= 1:
+                    btts += p
+        return ModelProbs(name="stage1-lambdas", p_over15=_clamp(p15), p_over25=_clamp(p25), p_btts=_clamp(btts), note=self._note)
 
 
 @dataclass(frozen=True)

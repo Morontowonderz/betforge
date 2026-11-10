@@ -1,0 +1,45 @@
+# BETFORGE — paper-trading analytics stack. Analysis only; no real bets.
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      BETFORGE_DB: /app/betforge.db
+      BETFORGE_BANKROLL_NGN: "100000"
+      BETFORGE_STAKE_CAP_FRAC: "0.01"
+      BETFORGE_HARD_MAX_STAKE_FRAC: "0.05"
+      BETFORGE_DAILY_LOSS_CAP_NGN: "20000"
+      BETFORGE_STAKE_PLAN: "flat"
+      BETFORGE_EDGE_THRESHOLD_PCT: "5.0"
+      BETFORGE_AUTO_PAPER_TRADE: "1"
+    volumes:
+      - betforge_data:/app     # persists betforge.db + betforge_ou.db
+
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+      args:
+        BETFORGE_API_URL: http://backend:8000
+    ports:
+      - "3000:3000"
+    environment:
+      BETFORGE_API_URL: http://backend:8000
+    depends_on:
+      - backend
+
+#  postgres:      # optional production swap (repo uses stdlib SQLite by default)
+#    image: postgres:16
+#    environment:
+#      POSTGRES_DB: betforge
+#      POSTGRES_USER: betforge
+#      POSTGRES_PASSWORD: betforge
+#    volumes:
+#      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  betforge_data:
+#  pgdata:

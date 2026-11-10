@@ -114,6 +114,12 @@ This product was deliberately built as a **calibration tool, not a betting bot**
    (the earlier full-season holdout showed Brier ≈ base-rate). `GET
    /api/accuracy` shows the current pooled Brier vs base rate and labels it
    honestly; an edge is asserted only where it actually holds.
+   The **two-stage λ model** (`scripts/eval_stage1.py`) marginally beats the
+   base rate (O2.5 Brier 0.2477 vs 0.2493) but still loses to the real closing
+   line (0.2350) — no exploitable edge; reported honestly.
+3. **Deploy:** `docker-compose.yml` (backend + `frontend/Dockerfile`), and CI
+   runs ruff + mypy strict + pytest + wheel + frontend build. Alerts are real
+   Telegram/Termii/Resend adapters behind the mock bus, enabled by env keys.
 
 ## Data & sources
 

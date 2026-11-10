@@ -13,6 +13,7 @@ third-party send path in this product.
 
 from __future__ import annotations
 
+import os
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -52,13 +53,20 @@ class Signal:
 
 
 class MockAlertBus:
-    """In-memory alert sink (console + list) so tests/dashboard see the events."""
+    """Alert sink that dispatches to real channels when env keys are present,
+    else logs to console + in-memory list (mock fallback).
+
+    Real channels (env-gated, best-effort, never error when unconfigured):
+      * TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID   -> Telegram sendMessage
+      * TERMII_API_KEY + TERMII_TO              -> Termii SMS
+      * RESEND_API_KEY + RESEND_TO              -> Resend email
+    """
 
     def __init__(self) -> None:
         self.events: list[dict[str, object]] = []
 
     def notify(self, channel: str, signal: Signal) -> dict[str, object]:
-        event = {
+        event: dict[str, object] = {
             "channel": channel,
             "fixture": signal.fixture,
             "market": signal.market,
@@ -67,9 +75,80 @@ class MockAlertBus:
             "at": datetime.now(timezone.utc).isoformat(),
         }
         self.events.append(event)
-        if channel == "console":
-            print(f"[mock-alert:{channel}] {signal.fixture} {signal.market} edge={signal.edge_pct:.2f}% stake=₦{signal.stake_ngn:.2f}")
+        delivered = "log"
+        if channel == "telegram":
+            delivered = _telegram(signal)
+        elif channel == "termii":
+            delivered = _termii(signal)
+        elif channel == "resend":
+            delivered = _resend(signal)
+        elif channel == "console":
+            print(f"[mock-alert:console] {signal.fixture} {signal.market} edge={signal.edge_pct:.2f}% stake=₦{signal.stake_ngn:.2f}")
+        event["delivered"] = delivered
         return event
+
+
+def _telegram(signal: Signal) -> str:
+    token = os.environ.get("TELEGRAM_BOT_TOKEN")
+    chat = os.environ.get("TELEGRAM_CHAT_ID")
+    text = f"BETFORGE signal: {signal.fixture} {signal.market} edge {signal.edge_pct:.1f}% @ {signal.odds:.2f} (₦{signal.stake_ngn:.0f})"
+    if not token or not chat:
+        return "log(mock)"
+    try:
+        import httpx
+
+        httpx.post(
+            f"https://api.telegram.org/bot{token}/sendMessage",
+            json={"chat_id": chat, "text": text},
+            timeout=5,
+        )
+        return "telegram"
+    except Exception:  # noqa: BLE001 - best-effort alert send must not crash the pipeline
+        return "log(failed)"
+
+
+def _termii(signal: Signal) -> str:
+    key = os.environ.get("TERMII_API_KEY")
+    to = os.environ.get("TERMII_TO")
+    if not key or not to:
+        return "log(mock)"
+    try:
+        import httpx
+
+        httpx.post(
+            "https://api.ng.termii.com/api/sms/send",
+            json={
+                "api_key": key,
+                "to": to,
+                "from": os.environ.get("TERMII_FROM", "BetForge"),
+                "sms": f"BETFORGE: {signal.fixture} {signal.market} edge {signal.edge_pct:.1f}%",
+                "type": "plain",
+                "channel": "dnd",
+            },
+            timeout=5,
+        )
+        return "termii"
+    except Exception:  # noqa: BLE001
+        return "log(failed)"
+
+
+def _resend(signal: Signal) -> str:
+    key = os.environ.get("RESEND_API_KEY")
+    to = os.environ.get("RESEND_TO")
+    if not key or not to:
+        return "log(mock)"
+    try:
+        import httpx
+
+        httpx.post(
+            "https://api.resend.com/emails",
+            headers={"Authorization": f"Bearer {key}"},
+            json={"from": os.environ.get("RESEND_FROM", "betforge@shadowspark.tech"), "to": [to], "subject": f"BETFORGE signal: {signal.fixture}", "text": f"{signal.market} edge {signal.edge_pct:.1f}% @ {signal.odds:.2f}"},
+            timeout=5,
+        )
+        return "resend"
+    except Exception:  # noqa: BLE001
+        return "log(failed)"
 
 
 def _confidence(edge_pct: float) -> str:

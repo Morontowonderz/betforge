@@ -28,3 +28,10 @@ exclude = ["tests", "data", "dist", "docs", ".venv", ".git"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.mypy]
+files = ["src/betforge/models_engine.py", "src/betforge/backtest.py", "src/betforge/signals.py"]
+
+[[tool.mypy.overrides]]
+module = "sklearn.*"
+ignore_missing_imports = true

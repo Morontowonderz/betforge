@@ -133,3 +133,36 @@ scientific finding and is exactly the opposite of the +121% 1X2-proxy
 artefact: the moment the comparison is real, the fake edge vanishes.
 The product surfaces this honestly (dashboard banner + CLI) rather than
 claiming a profitability that does not exist.
+
+## 14. Two-stage λ model (XGB stage-1) built and evaluated honestly
+Added `Stage1Lambdas` (`models_engine.py`): per-match λ_home/λ_away predicted
+from rolling team features with `sklearn.GradientBoostingRegressor`, then fed
+into the Dixon-Coles matrix. Honest fallback to strength-Poisson when sklearn
+is absent or the sample is too small. `scripts/eval_stage1.py` runs a
+no-lookahead walk-forward (train first 70% of the last 4,000 real-line
+matches, predict the held-out 30%) and reports three Brier scores.
+
+**Result (O2.5, held-out 1,200):** model **0.2477** vs base-rate **0.2493**
+(tiny ~0.6% improvement) vs real closing line **0.2350** — the market still
+beats the model. Verdict: per-match lambdas do not create an exploitable edge
+against the efficient closing line. This is the owner-flagged "XGB stage-1"
+attempt from the HANDOFF, delivered and reported honestly (no edge claimed).
+The `[tool.mypy]` `sklearn.*` override (ignore_missing_imports) is because
+scikit-learn ships no type stubs.
+
+## 15. Alert adapters are now real, env-swappable, mock-fallback by default
+`MockAlertBus.notify` dispatches to **Telegram**, **Termii (SMS)** and
+**Resend (email)** when the corresponding env keys are present
+(`TELEGRAM_BOT_TOKEN`+`TELEGRAM_CHAT_ID`, `TERMII_API_KEY`+`TERMII_TO`,
+`RESEND_API_KEY`+`RESEND_TO`); otherwise it logs to console + in-memory list
+and marks the event `delivered: log(mock)`. Sends are best-effort (a failure
+never crashes the pipeline). No keys are committed; `.env.example` documents
+them.
+
+## 16. Deploy parity: docker-compose + frontend image + fuller CI
+`docker-compose.yml` runs the backend (existing Dockerfile) and the new
+`frontend/Dockerfile` (Next.js 15 builder→runner, `node:20-alpine`), wiring
+`BETFORGE_API_URL=http://backend:8000`, with a named volume persisting the
+SQLite stores; Postgres is left commented as the optional production swap.
+`.github/workflows/ci.yml` now runs (backend) ruff + mypy strict + pytest +
+wheel, and (frontend) pnpm install + build on every push/PR.

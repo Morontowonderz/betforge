@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  test:
+  backend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,11 +16,34 @@ jobs:
       - name: Install package + test deps
         run: |
           pip install -e '.[test]'
+          pip install ruff mypy
+      - name: Lint (ruff)
+        run: ruff check src/betforge
+      - name: Type check (mypy strict on product modules)
+        run: mypy --strict src/betforge/models_engine.py src/betforge/backtest.py src/betforge/signals.py
       - name: Run tests
-        run: |
-          python -m pytest -q
-      # Optional: build check (only the wheel is shipped).
+        run: python -m pytest -q
       - name: Build wheel
         run: |
           pip install build
           python -m build --wheel
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - name: Install + build
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
