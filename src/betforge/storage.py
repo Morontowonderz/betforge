@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import csv
 import sqlite3
-from collections.abc import Iterator
+from collections.abc import Iterable, Iterator
 from pathlib import Path
 
 from .normalization import Match
@@ -39,11 +39,27 @@ CREATE TABLE IF NOT EXISTS matches (
 CREATE INDEX IF NOT EXISTS idx_matches_date ON matches(date);
 """
 
+# Real Over/Under 2.5 closing lines (football-data.co.uk), for the honest O2.5 path.
+SCHEMA_OU = """
+CREATE TABLE IF NOT EXISTS matches_ou (
+    id         INTEGER PRIMARY KEY,
+    home       TEXT NOT NULL,
+    away       TEXT NOT NULL,
+    home_goals INTEGER NOT NULL,
+    away_goals INTEGER NOT NULL,
+    date       TEXT,
+    over_odds  REAL,
+    under_odds REAL
+);
+CREATE INDEX IF NOT EXISTS idx_matches_ou_date ON matches_ou(date);
+"""
+
 
 def connect(db_path: str | Path) -> sqlite3.Connection:
     conn = sqlite3.connect(str(db_path))
     conn.execute("PRAGMA journal_mode=WAL")
     conn.executescript(SCHEMA)
+    conn.executescript(SCHEMA_OU)
     return conn
 
 
@@ -110,5 +126,47 @@ def iter_matches(db_path: str | Path) -> Iterator[Match]:
 def count_matches(db_path: str | Path) -> int:
     conn = connect(db_path)
     n = conn.execute("SELECT COUNT(*) FROM matches").fetchone()[0]
+    conn.close()
+    return int(n)
+
+
+def ingest_ou_matches(records: Iterable[Match], db_path: str | Path) -> int:
+    """Insert real-line (over_odds/under_odds) Matches into matches_ou. Returns count."""
+    conn = connect(db_path)
+    conn.execute("DELETE FROM matches_ou")
+    n = 0
+    for m in records:
+        if not m.has_ou_line:
+            continue
+        conn.execute(
+            "INSERT INTO matches_ou(home,away,home_goals,away_goals,date,over_odds,under_odds) VALUES(?,?,?,?,?,?,?)",
+            (m.home, m.away, m.home_goals, m.away_goals, m.date, m.over_odds or float("inf"), m.under_odds or float("inf")),
+        )
+        n += 1
+    conn.commit()
+    conn.close()
+    return n
+
+
+def iter_matches_ou(db_path: str | Path) -> Iterator[Match]:
+    """Yield real-line Matches (with over_odds/under_odds) from matches_ou."""
+    conn = connect(db_path)
+    cur = conn.execute("SELECT home,away,home_goals,away_goals,date,over_odds,under_odds FROM matches_ou")
+    for home, away, hg, ag, date, ov, un in cur:
+        yield Match(
+            home=home,
+            away=away,
+            home_goals=int(hg),
+            away_goals=int(ag),
+            date=date,
+            over_odds=float(ov) if ov is not None else float("inf"),
+            under_odds=float(un) if un is not None else float("inf"),
+        )
+    conn.close()
+
+
+def count_matches_ou(db_path: str | Path) -> int:
+    conn = connect(db_path)
+    n = conn.execute("SELECT COUNT(*) FROM matches_ou").fetchone()[0]
     conn.close()
     return int(n)

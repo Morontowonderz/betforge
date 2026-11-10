@@ -10,7 +10,7 @@ from the same SQLite store as /predict.
 from __future__ import annotations
 
 from . import storage
-from .backtest import O15, Strategy, run_backtest
+from .backtest import O25, Strategy, run_backtest
 from .minute7 import goal_minute_distribution, run_hypothesis_test, simulate_matches
 from .paper import PaperTrader
 from .settings import BetforgeSettings
@@ -66,7 +66,7 @@ def build_router(db_path, *, seed: int = 7):
     @router.post("/backtest")
     def backtest(body: dict | None = None):
         body = body or {}
-        market = body.get("market", O15)
+        market = body.get("market", O25)
         strategy = Strategy(
             name=body.get("strategy", f"{market}_value"),
             market=market,
@@ -76,17 +76,32 @@ def build_router(db_path, *, seed: int = 7):
             stake_plan=body.get("stake_plan", "flat"),
         )
         n = int(body.get("sample", 2500))
-        matches = _sample_matches(db_path, n)
-        if not matches:
-            raise HTTPException(503, "no data")
+        if market == O25:
+            from . import storage as _st
+
+            # real O/U closing lines -> the honest O2.5 backtest path
+            matches = list(_st.iter_matches_ou(db_path))
+            matches.sort(key=lambda m: m.date or "")
+            matches = matches[-n:]
+            if not matches:
+                raise HTTPException(503, "no real O/U lines; run scripts/ingest_ou_data.py")
+        else:
+            matches = _sample_matches(db_path, n)
+            if not matches:
+                raise HTTPException(503, "no data")
         run = run_backtest(matches, strategy=strategy, start_bankroll=100_000.0)
         curve = run.profit_curve
         step = max(1, len(curve) // 200)
+        is_ou = market == "O2.5"
         return {
             "metrics": run.metrics(),
             "profit_curve": [round(v, 2) for v in curve[::step]][:240],
             "bets": [b.__dict__ for b in run.bets[:100]],
-            "market_source": "1x2-proxy (no real O/U closing line in this dataset — ROI is not evidence of real edge)",
+            "market_source": (
+                "real O/U 2.5 closing line (de-vigged) — a genuine market comparison"
+                if is_ou
+                else "1x2-proxy (no real O/U closing line in this dataset — ROI is not evidence of real edge)"
+            ),
             "paper_only": True,
         }
 

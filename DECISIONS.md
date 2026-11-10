@@ -111,3 +111,25 @@ The pre-existing scaffold commit's prediction math is byte-compatible; my lint
 pass touched only unused imports/variables and added `noqa` on the intentional
 multi-start-solver try/except in `baseline.py`. No behaviour change to the
 verified core.
+
+## 13. Real O/U closing-line ingest turns the proxy test into a real edge test
+Added an honest **Over 2.5** value path so the product no longer has to only
+compare against the miscalibrated 1X2 proxy:
+- `ingestion.py` parses the football-data.co.uk CSVs this repo already had in
+  `data/raw_fd/` (E0/D1/I1/SP1, 2019–2025): real columns, **closing** O/U 2.5
+  line preferred (AvgC>2.5/<2.5) with opening fallback, real FT goals only,
+  NaN-odds rows dropped and counted, team names normalised.
+- `storage.matches_ou` holds the real-line matches; `scripts/ingest_ou_data.py`
+  loaded **8,675** real-line matches (24 files, 1 row dropped).
+- The `O2.5_value` strategy compares model P(Over 2.5) against the **de-vigged
+  real closing line**, prices the bet at the real `Over` odd, and settles on
+  `total_goals > 2`. `market_source` is labelled "real O/U 2.5 closing line".
+
+**The honest result (O2.5_value, edge≥5%, last 2,500 real-line matches):**
+942 bets, 50.9% win rate, **ROI −6.2%**, net −₦47k, max drawdown 53.8%.
+Against a real, efficient closing line the strength-Poisson model **cannot beat
+the market** — it loses roughly the bookmaker margin. This is the truthful
+scientific finding and is exactly the opposite of the +121% 1X2-proxy
+artefact: the moment the comparison is real, the fake edge vanishes.
+The product surfaces this honestly (dashboard banner + CLI) rather than
+claiming a profitability that does not exist.

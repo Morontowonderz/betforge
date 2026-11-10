@@ -30,6 +30,8 @@ data/raw_fd/
 # SQLite database is a build artifact (regenerate via scripts/seed_historical.py)
 betforge.db
 betforge.db-*
+betforge_ou.db
+betforge_ou.db-*
 
 # Analysis outputs
 results/

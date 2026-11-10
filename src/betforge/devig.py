@@ -31,6 +31,7 @@ MAX_GOALS = 10
 @dataclass(frozen=True)
 class MarketProbs:
     p_over15: float
+    p_over25: float
     p_btts: float
     p_home: float
     p_draw: float
@@ -65,8 +66,9 @@ def _matrix_1x2(J: list[list[float]]) -> tuple[float, float, float]:
 def _marginalize(J: list[list[float]]) -> dict[str, float]:
     ph, pd_, pa = _matrix_1x2(J)
     over15 = sum(J[i][j] for i in range(MAX_GOALS + 1) for j in range(MAX_GOALS + 1) if i + j > 1)
+    over25 = sum(J[i][j] for i in range(MAX_GOALS + 1) for j in range(MAX_GOALS + 1) if i + j > 2)
     btts = sum(J[i][j] for i in range(1, MAX_GOALS + 1) for j in range(1, MAX_GOALS + 1))
-    return {"p_over15": over15, "p_btts": btts, "p_home": ph, "p_draw": pd_, "p_away": pa}
+    return {"p_over15": over15, "p_over25": over25, "p_btts": btts, "p_home": ph, "p_draw": pd_, "p_away": pa}
 
 
 def fit_dc_to_1x2(probs: Sequence[float]) -> tuple[float, float, float]:
@@ -112,6 +114,7 @@ def market_from_1x2(odds: Sequence[float]) -> MarketProbs:
     marg = _marginalize(J)
     return MarketProbs(
         p_over15=marg["p_over15"],
+        p_over25=marg["p_over25"],
         p_btts=marg["p_btts"],
         p_home=marg["p_home"],
         p_draw=marg["p_draw"],
@@ -121,12 +124,26 @@ def market_from_1x2(odds: Sequence[float]) -> MarketProbs:
 
 
 def market_from_ou(over_odds: float, under_odds: float, *, over15: bool = True) -> MarketProbs:
-    """Real two-way O/U line -> direct market probability (no proxy)."""
+    """Real two-way O/U 2.5 line -> de-vigged market probabilities (no proxy).
+
+    P(Over2.5) is the honest head-to-head number for the real line. P(Over1.5)
+    is NOT directly quoted by a 2.5 line, so we truthfully label the O1.5 value
+    as a model-derived estimate (from the same de-vigged total) rather than a
+    quoted market price — the O2.5 strategy is the fully-real comparison.
+    """
     if not (math.isfinite(over_odds) and math.isfinite(under_odds) and over_odds > 1.0 and under_odds > 1.0):
-        return MarketProbs(0.75, 0.55, 0.4, 0.25, 0.35, proxy=True, source="invalid-ou-fallback")
-    p = 1.0 / over_odds + 1.0 / under_odds
-    p_over = (1.0 / over_odds) / p
-    return MarketProbs(p_over, p_over * 0.62, 0.4, 0.25, 0.35, proxy=False, source="ou")
+        return MarketProbs(0.75, 0.50, 0.55, 0.4, 0.25, 0.35, proxy=True, source="invalid-ou-fallback")
+    inv_o = 1.0 / over_odds
+    inv_u = 1.0 / under_odds
+    p25 = inv_o / (inv_o + inv_u)
+    # no real 1.5 line: O1.5 is a soft upper bound estimate
+    return MarketProbs(p_over15=min(1.0, p25 + 0.15), p_over25=p25, p_btts=p25 * 0.62, p_home=0.4, p_draw=0.25, p_away=0.35, proxy=False, source="ou25")
+
+
+def ou_implied_p25(over_odds: float, under_odds: float) -> float:
+    """De-vigged P(Over 2.5) from a real O/U 2.5 closing line."""
+    m = market_from_ou(over_odds, under_odds)
+    return float(m.p_over25)
 
 
 def avg_spread(expected: float, positions: Sequence[float]) -> tuple[float, float]:

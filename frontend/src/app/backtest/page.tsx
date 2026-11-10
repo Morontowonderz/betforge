@@ -51,6 +51,7 @@ export default function BacktestPage() {
         <label className="text-sm text-muted">Market
           <select value={market} onChange={(e) => setMarket(e.target.value)} className={`${input} mt-1 block`}>
             <option value="O1.5">Over 1.5</option>
+            <option value="O2.5">Over 2.5 · real line</option>
             <option value="BTTS">BTTS</option>
           </select>
         </label>

@@ -19,6 +19,7 @@ Responsible-use: default stub uses flat 1% of bankroll, never more than 5%
 
 from __future__ import annotations
 
+import math
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from statistics import mean
@@ -31,6 +32,7 @@ from .staking import kelly_fraction
 
 # market targets BetForge bets on
 O15 = "O1.5"
+O25 = "O2.5"
 BTTS = "BTTS"
 
 
@@ -128,13 +130,52 @@ class BacktestRun:
 
 
 def _market_prob(ensemble_result: EnsembleResult, market: str) -> float:
-    return ensemble_result.p_over15 if market == O15 else ensemble_result.p_btts
+    if market == O15:
+        return ensemble_result.p_over15
+    if market == O25:
+        return ensemble_result.p_over25
+    return ensemble_result.p_btts
 
 
 def _settled(match: Match, market: str) -> str:
     if market == O15:
         return "WON" if match.over1_5 else "LOST"
+    if market == O25:
+        return "WON" if match.over2_5 else "LOST"
     return "WON" if match.btts else "LOST"
+
+
+def _requires_ou(market: str) -> bool:
+    return market == O25
+
+
+def _has_odds(m: Match, market: str) -> bool:
+    if _requires_ou(market):
+        return m.has_ou_line
+    return all(o != float("inf") and o is not None for o in (m.home_odds, m.draw_odds, m.away_odds))
+
+
+def _market_odds(m: Match, market: str) -> float | None:
+    # O2.5 uses the REAL closing over-line price (no proxy).
+    if market == O25:
+        if not m.has_ou_line or not math.isfinite(m.over_odds) or m.over_odds <= 1.0:
+            return None
+        return m.over_odds
+    # 1X2-only data: stand-in two-way price for market/BTTS proxy (labelled).
+    if market == O15:
+        inv = [1.0 / m.home_odds, 1.0 / m.draw_odds, 1.0 / m.away_odds]
+        return float(1.0 / (sum(inv) / 3))
+    btts_inv = 0.5 * (1.0 / m.home_odds + 1.0 / m.away_odds)
+    return float(1.0 / btts_inv) if btts_inv > 0 else None
+
+
+def _implied(m: Match, market: str) -> float:
+    if market == O25:
+        from .devig import ou_implied_p25
+
+        return float(ou_implied_p25(m.over_odds, m.under_odds))
+    mkt = market_from_1x2([m.home_odds, m.draw_odds, m.away_odds])
+    return mkt.p_over15 if market == O15 else mkt.p_btts
 
 
 def run_backtest(
@@ -156,7 +197,7 @@ def run_backtest(
         model_p = _market_prob(result, strategy.market)
 
         # 2) market from the match's OWN pre-match closing line (fair, pre-kickoff)
-        has_odds = _has_odds(m)
+        has_odds = _has_odds(m, strategy.market)
         if not has_odds:
             history.append(m)
             continue
@@ -200,25 +241,6 @@ def run_backtest(
     run.end_bankroll = bankroll
     run.profit_curve = curve
     return run
-
-
-def _has_odds(m: Match) -> bool:
-    return all(o != float("inf") and o is not None for o in (m.home_odds, m.draw_odds, m.away_odds))
-
-
-def _market_odds(m: Match, market: str) -> float | None:
-    # 1X2-only data: we use the draw-adjusted average of the two relevant
-    # outcomes as a stand-in closing price for a two-way market proxy.
-    if market == O15:
-        inv = [1.0 / m.home_odds, 1.0 / m.draw_odds, 1.0 / m.away_odds]
-        return float(1.0 / (sum(inv) / 3))
-    btts_inv = 0.5 * (1.0 / m.home_odds + 1.0 / m.away_odds)
-    return float(1.0 / btts_inv) if btts_inv > 0 else None
-
-
-def _implied(m: Match, market: str) -> float:
-    mkt = market_from_1x2([m.home_odds, m.draw_odds, m.away_odds])
-    return mkt.p_over15 if market == O15 else mkt.p_btts
 
 
 def _stake_ngn(strategy: Strategy, p: float, odds: float, bankroll: float) -> float:

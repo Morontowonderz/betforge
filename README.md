@@ -103,6 +103,13 @@ This product was deliberately built as a **calibration tool, not a betting bot**
    of real value.** The engine, strategies, metrics and no-lookahead discipline
    are real and correct; the *profitability* numbers are not a claim. The CLI
    and dashboard both print this caveat.
+   **This is now fixed for the Over 2.5 strategy**: we ingest the real
+   football-data.co.uk **closing O/U 2.5 line** (`scripts/ingest_ou_data.py`,
+   8,675 matches) and the `O2.5` backtest compares against that real line.
+   The honest result: **ROI ≈ −6.2%** (942 bets, 50.9% win rate) — the model
+   cannot beat an efficient real closing line and loses roughly the margin.
+   That negative number is the truth; the +121% on the 1X2 proxy was the
+   artefact of the proxy's bias.
 2. **The model does not reliably beat the base rate** on the historical eval
    (the earlier full-season holdout showed Brier ≈ base-rate). `GET
    /api/accuracy` shows the current pooled Brier vs base rate and labels it

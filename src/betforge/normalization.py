@@ -24,15 +24,27 @@ class Match:
     home_odds: float = float("inf")
     draw_odds: float = float("inf")
     away_odds: float = float("inf")
+    # REAL Over/Under 2.5 closing line (football-data.co.uk): float("inf") = absent
+    over_odds: float = float("inf")
+    under_odds: float = float("inf")
 
     @property
     def total_goals(self) -> int:
         return self.home_goals + self.away_goals
 
     @property
+    def has_ou_line(self) -> bool:
+        return self.over_odds != float("inf") and self.under_odds != float("inf")
+
+    @property
     def over1_5(self) -> bool:
         """Full-time total goals strictly greater than 1.5."""
         return self.total_goals > 1
+
+    @property
+    def over2_5(self) -> bool:
+        """Full-time total goals >= 3 (the real O/U 2.5 line's winning side)."""
+        return self.total_goals > 2
 
     @property
     def btts(self) -> bool:

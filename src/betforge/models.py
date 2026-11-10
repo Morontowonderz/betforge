@@ -34,6 +34,7 @@ class Prediction:
     expected_home: float
     expected_away: float
     p_over1_5: float
+    p_over2_5: float
     p_btts: float
     p_home: float
     p_draw: float
@@ -46,6 +47,7 @@ class Prediction:
             "expected_home": round(self.expected_home, 3),
             "expected_away": round(self.expected_away, 3),
             "p_over1_5": round(self.p_over1_5, 4),
+            "p_over2_5": round(self.p_over2_5, 4),
             "p_btts": round(self.p_btts, 4),
             "p_home": round(self.p_home, 4),
             "p_draw": round(self.p_draw, 4),
@@ -173,6 +175,7 @@ def predict(
 
     p_home = p_draw = p_away = 0.0
     p_over1_5 = 0.0
+    p_over2_5 = 0.0
     p_btts = 0.0
     for i in range(MAX_GOALS + 1):
         for j in range(MAX_GOALS + 1):
@@ -185,6 +188,8 @@ def predict(
                 p_away += p
             if i + j > 1:  # over 1.5
                 p_over1_5 += p
+            if i + j > 2:  # over 2.5 (real O/U line)
+                p_over2_5 += p
             if i >= 1 and j >= 1:  # BTTS
                 p_btts += p
 
@@ -194,6 +199,7 @@ def predict(
         expected_home=lam_home,
         expected_away=lam_away,
         p_over1_5=p_over1_5,
+        p_over2_5=p_over2_5,
         p_btts=p_btts,
         p_home=p_home,
         p_draw=p_draw,

@@ -36,10 +36,11 @@ def _clamp(p: float) -> float:
 
 @dataclass(frozen=True)
 class ModelProbs:
-    """One model's probabilities for a fixture (over15=1 => total>1)."""
+    """One model's probabilities for a fixture."""
 
     name: str
     p_over15: float
+    p_over25: float
     p_btts: float
     available: bool = True
     note: str = ""
@@ -48,6 +49,7 @@ class ModelProbs:
         return {
             "model": self.name,
             "p_over15": round(self.p_over15, 4),
+            "p_over25": round(self.p_over25, 4),
             "p_btts": round(self.p_btts, 4),
             "available": self.available,
             "note": self.note,
@@ -56,12 +58,12 @@ class ModelProbs:
 
 def predict_poisson(home: str, away: str, history: Sequence[Match]) -> ModelProbs:
     pred = strength_predict(home, away, history, rho=0.0)
-    return ModelProbs(name="poisson", p_over15=_clamp(pred.p_over1_5), p_btts=_clamp(pred.p_btts))
+    return ModelProbs(name="poisson", p_over15=_clamp(pred.p_over1_5), p_over25=_clamp(pred.p_over2_5), p_btts=_clamp(pred.p_btts))
 
 
 def predict_dc(home: str, away: str, history: Sequence[Match], *, rho: float = DC_DEFAULT_RHO) -> ModelProbs:
     pred = strength_predict(home, away, history, rho=rho)
-    return ModelProbs(name="dixon-coles", p_over15=_clamp(pred.p_over1_5), p_btts=_clamp(pred.p_btts))
+    return ModelProbs(name="dixon-coles", p_over15=_clamp(pred.p_over1_5), p_over25=_clamp(pred.p_over2_5), p_btts=_clamp(pred.p_btts))
 
 
 class MLModel:
@@ -109,6 +111,7 @@ class MLModel:
             return ModelProbs(
                 name="ml",
                 p_over15=0.5,
+                p_over25=0.5,
                 p_btts=0.5,
                 available=False,
                 note=self._note,
@@ -116,7 +119,8 @@ class MLModel:
         X: list[list[float]] = [[float(feature_row[k]) for k in self._feature_keys]]
         po = float(self._clf_over.predict_proba(X)[0][1])
         pb = float(self._clf_btts.predict_proba(X)[0][1])
-        return ModelProbs(name="ml", p_over15=_clamp(po), p_btts=_clamp(pb), note=self._note)
+        # no separate O2.5 classifier in the honest fallback: derive from O1.5
+        return ModelProbs(name="ml", p_over15=_clamp(po), p_over25=min(_clamp(po), 1.0), p_btts=_clamp(pb), note=self._note)
 
 
 @dataclass(frozen=True)
@@ -124,6 +128,7 @@ class EnsembleResult:
     home: str
     away: str
     p_over15: float
+    p_over25: float
     p_btts: float
     components: tuple[ModelProbs, ...] = field(default_factory=tuple)
 
@@ -132,6 +137,7 @@ class EnsembleResult:
             "home": self.home,
             "away": self.away,
             "p_over15": round(self.p_over15, 4),
+            "p_over25": round(self.p_over25, 4),
             "p_btts": round(self.p_btts, 4),
             "components": [c.as_dict() for c in self.components],
         }
@@ -163,14 +169,24 @@ def ensemble(
     if total_w <= 0:
         total_w = 1.0
     p_over_acc = 0.0
+    p_over25_acc = 0.0
     p_btts_acc = 0.0
     for c in comps:
         wi = w.get(c.name, 0.0)
         p_over_acc += wi * c.p_over15
+        p_over25_acc += wi * c.p_over25
         p_btts_acc += wi * c.p_btts
     p_over = p_over_acc / total_w
+    p_over25 = p_over25_acc / total_w
     p_btts = p_btts_acc / total_w
-    return EnsembleResult(home=home, away=away, p_over15=_clamp(p_over), p_btts=_clamp(p_btts), components=tuple(comps))
+    return EnsembleResult(
+        home=home,
+        away=away,
+        p_over15=_clamp(p_over),
+        p_over25=_clamp(p_over25),
+        p_btts=_clamp(p_btts),
+        components=tuple(comps),
+    )
 
 
 # Convenience alias mirroring how callers/brokers name it.
