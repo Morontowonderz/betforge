@@ -17,8 +17,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from betforge.ingestion import load_ou_corpus  # noqa: E402
-from betforge.storage import run_ingest, ingest_ou_matches, count_matches, count_matches_ou  # noqa: E402
+from betforge.ingestion import load_ou_corpus
+from betforge.storage import (
+    count_matches,
+    count_matches_ou,
+    ingest_ou_matches,
+    run_ingest,
+)
 
 
 def main() -> None:
