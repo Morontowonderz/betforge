@@ -1,21 +1,20 @@
-# BetForge service image.
-# Builds a small Python ASGI server exposing /predict from the SQLite-backed,
-# stdlib model core. Training data is ingested into betforge.db at build time
-# from the shipped canonical CSV (the .db itself is a gitignored build artifact).
+# BetForge service image (paper-trading analytics, SQLite-backed).
+# Ships the real O/U closing-line corpus (data/raw_fd) so /health, /api/matches,
+# /api/backtest (O2.5), /api/accuracy and /api/research have real data on first
+# run. Both tables (matches, matches_ou) live in one SQLite file (betforge.db).
 FROM python:3.12-slim
 
 WORKDIR /app
 
-# Install build tooling, then project with web extra (fastapi + uvicorn).
 COPY pyproject.toml README.md ./
 COPY src ./src
 RUN pip install --no-cache-dir --upgrade pip \
  && pip install --no-cache-dir .[web]
 
-# Training data + ingest script -> build the SQLite DB inside the image.
 COPY scripts ./scripts
-COPY data/matches.csv /app/data/matches.csv
-RUN python scripts/ingest_db.py --csv /app/data/matches.csv --db /app/betforge.db
+# Real O/U 2.5 closing lines + canonical FT results -> one SQLite file (betforge.db)
+COPY data/raw_fd /app/data/raw_fd
+RUN python scripts/build_image_seed.py /app/data/raw_fd /app/betforge.db
 
 EXPOSE 8000
 ENV HOST=0.0.0.0 PORT=8000 BETFORGE_DB=/app/betforge.db
