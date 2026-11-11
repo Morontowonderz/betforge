@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from . import storage
 from .backtest import O25, Strategy, run_backtest
-from .minute7 import goal_minute_distribution, run_hypothesis_test, simulate_matches
+from .minute7 import goal_minute_distribution, run_hypothesis_test
 from .paper import PaperTrader
 from .settings import BetforgeSettings
 from .signals import detect_signals
@@ -125,10 +125,14 @@ def build_router(db_path, *, seed: int = 7):
 
     @router.get("/research/minute7")
     def research():
-        matches = simulate_matches("Home", "Away", 200, seed=seed)
+        from .live_ingest import get_minute7_corpus
+
+        matches, simulated = get_minute7_corpus()
         report = run_hypothesis_test(matches, alpha=0.05)
+        rep = report.as_dict()
+        rep["simulated"] = simulated  # truthful: mock vs real live corpus
         dist = goal_minute_distribution(matches)
-        return {"report": report.as_dict(), "goal_minute_distribution": dist, "paper_only": True}
+        return {"report": rep, "goal_minute_distribution": dist, "corpus_simulated": simulated, "sample": len(matches), "paper_only": True}
 
     @router.get("/accuracy")
     def accuracy():
